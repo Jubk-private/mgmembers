@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block htmltitle %}MG-members{% endblock%}</title>
+
+    <!-- Bootstrap -->
+    <link href="{% static 'mgmembers/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'mgmembers/font-awesome/css/fontawesome-all.min.css' %}" rel="stylesheet">
+    <link href="{% static 'mgmembers/css/main.css' %}" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" href="/">MG-members</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          {% if request.user.is_authenticated %}
+          <li class="nav-item active">
+            <a class="nav-link" href="/home/">Home</a>
+          </li>
+          {% endif %}
+        </ul>
+        <ul class="navbar-nav navbar-right">
+          {% if request.user.is_authenticated %}
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'change-password' %}">Change password</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'logout' %}">Log out</a>
+          </li>
+          {% else %}
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'login' %}?next=/home/">Log in</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'signup' %}">Register user</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+
+    <main role="main" class="container">
+      <div class="starter-template">
+        {% if messages %}
+        <div class="row text-left">
+          <div class="col-md-12">
+            {% for message in messages %}
+            <div{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+        {% block content %}
+          <h1>MG-members website</h1>
+          <p>This is default content, someone needs to add a content</p>
+        {% endblock%}
+      </div>
+    </main>
+
+    <script src="{% static 'mgmembers/jquery/jquery-1.12.4.js' %}"></script>
+    <script src="{% static 'mgmembers/bootstrap/js/bootstrap.min.js' %}"></script>
+  </body>
+</html>

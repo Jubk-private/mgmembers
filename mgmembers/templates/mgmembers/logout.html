@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+
+{% block content %}
+  <div class="row text-left">
+    <div class="col-md-12">
+      <h2>Logged out</h2>
+      <p>You have been logged out.</p>
+      <p><a href="{% url 'login' %}">Click here to log in again</a>.</p>
+    </div>
+  </div>
+{% endblock %}

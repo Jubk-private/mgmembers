@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row text-left">
+  <div class="col-md-12">
+    <h1>Members</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Owner</th>
+          <th scope="col">Event Jobs</th>
+          <th scope="col">Gear Jobs</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for character in characters %}
+        <tr>
+          <th scope="row"><a href="{% url 'character' character.name %}">{{ character.name }}</a></th>
+          <td>{{ character.owner.first_name }}</td>
+          <td>{{ character.event_jobs_html|safe }}</td>
+          <td>{{ character.gear_jobs_html|safe }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+  </div>
+</div>
+{% endblock %}

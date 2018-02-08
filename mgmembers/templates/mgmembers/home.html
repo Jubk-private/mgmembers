@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row text-left">
+  <div class="col-md-12">
+    <h1>{{ request.user.first_name }}'s Characters</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Event Jobs</th>
+          <th scope="col">Gear Jobs</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for character in characters %}
+        <tr>
+          <th scope="row"><a href="{% url 'character' character.name %}">{{ character.name }}</a></th>
+          <td>{{ character.event_jobs_html|safe }}</td>
+          <td>{{ character.gear_jobs_html|safe }}</td>
+          <td>
+            <a href="{% url 'character-edit' character.name %}" role="button" class="btn btn-primary fa fa-edit" title="Edit"></a>
+            <a href="{% url 'character-delete' character.name %}" role="button" class="btn btn-danger fa fa-times" title="Delete"></a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p>
+        <a href="{% url 'character-create' %}" role="button" class="btn btn-primary">Create new character</a>
+    </p>
+    {% if request.user.is_superuser %}
+    <h1>Superuser tools</h1>
+    <ul>
+      <li><a href="{% url 'loginnonce-create' %}">Create login nonce</a></li>
+    </ul>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

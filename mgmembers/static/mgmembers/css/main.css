@@ -1,0 +1,20 @@
+body {
+  padding-top: 5rem;
+}
+.starter-template {
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+#signupform label {
+    font-weight: bold;
+}
+
+#signupform span.help-block {
+    background-color: #d9534f;
+    color: white;
+}
+
+.fa.fa-star.master {
+    color: rgb(249, 194, 55);
+}

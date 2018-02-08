@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row text-left">
+  <div class="col-md-12">
+    <h1>Character</h1>
+    <dl class="row">
+      <dt class="col-sm-3">Name</dt>
+      <dd class="col-sm-9">{{ character.name }}</dd>
+      <dt class="col-sm-3">Owner</dt>
+      <dd class="col-sm-9">{{ character.owner.first_name }}</dd>
+    </dl>
+    {% if can_edit %}
+    <p>
+      <a href="{% url 'character-edit' character.name %}" role="button" class="btn btn-primary">Edit character</a>
+    </p>
+    {% endif %}
+    <h2>Jobs</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Job</th>
+          <th scope="col">Level</th>
+          <th scope="col">Mastered</th>
+          <th scope="col">Event status</th>
+          <th scope="col">Gearing status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cjob in character.characterjobs.all %}
+        <tr>
+          <th scope="row">{{ cjob.job.name }}</th>
+          <td>{{ cjob.level }}</td>
+          <td>{{ cjob.mastered_html|safe }}</td>
+          <td>{{ cjob.event_status_simple_display }}</td>
+          <td>{{ cjob.gear_status_simple_display }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% if can_edit %}
+    <p>
+      <a href="{% url 'character-jobs-edit' character.name %}" role="button" class="btn btn-primary">Edit jobs</a>
+    </p>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
