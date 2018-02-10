@@ -127,6 +127,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
 # Auth
@@ -139,4 +140,4 @@ MESSAGE_TAGS = {
 
 LOCAL_SETTINGS_FILE = os.path.join(SITE_DIR, "local_settings.py")
 if os.path.exists(LOCAL_SETTINGS_FILE):
-    from local_settings import *  # noqa
+    from mgmembers_site.local_settings import *  # noqa

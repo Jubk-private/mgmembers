@@ -82,7 +82,7 @@ class Command(BaseCommand):
             for x in index2data.values():
                 ownername = OWNER_MAP.get(x['name'], x['name'])
                 try:
-                    owner = User.objects.get(first_name=ownername)
+                    owner = User.objects.get(username=ownername)
                 except User.DoesNotExist:
                     print("Creating owner %s" % ownername)
                     owner = User(

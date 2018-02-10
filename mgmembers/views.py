@@ -8,6 +8,7 @@ from django.forms import modelformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.shortcuts import reverse
+from django.http import Http404
 from django.views.generic import CreateView
 from django.views.generic import DeleteView
 from django.views.generic import DetailView
@@ -256,7 +257,12 @@ class LoginByNonceView(DetailView):
     model = mgmodels.OneTimeLoginNonce
 
     def get(self, request, *args, **kwargs):
+        if "bot/" in request.META['HTTP_USER_AGENT'].lower():
+            raise Http404("Bots can not log in")
+
         self.object = self.get_object()
+        self.object.target_user.is_active = True
+        self.object.target_user.save()
         login(request, self.object.target_user)
         messages.success(
             request,
