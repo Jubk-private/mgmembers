@@ -3,47 +3,200 @@
 {% block content %}
 <div class="row text-left">
   <div class="col-md-12">
-    <h1>Character</h1>
-    <dl class="row">
-      <dt class="col-sm-3">Name</dt>
-      <dd class="col-sm-9">{{ character.name }}</dd>
-      <dt class="col-sm-3">Owner</dt>
-      <dd class="col-sm-9">{{ character.owner.first_name }}</dd>
-    </dl>
-    {% if can_edit %}
-    <p>
-      <a href="{% url 'character-edit' character.name %}" role="button" class="btn btn-primary">Edit character</a>
-    </p>
-    {% endif %}
-    <h2>Jobs</h2>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Job</th>
-          <th scope="col">Level</th>
-          <th scope="col">Mastered</th>
-          <th scope="col">Event status</th>
-          <th scope="col">Gearing status</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for cjob in character.characterjobs.all %}
-        <tr>
-          <th scope="row">{{ cjob.job.name }}</th>
-          <td>{{ cjob.level }}</td>
-          <td>{{ cjob.mastered_html|safe }}</td>
-          <td>{{ cjob.event_status_simple_display }}</td>
-          <td>{{ cjob.gear_status_simple_display }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% if can_edit %}
-    <p>
-      <a href="{% url 'character-jobs-edit' character.name %}" role="button" class="btn btn-primary">Edit jobs</a>
-    </p>
-    {% endif %}
+    <h1>{{ character.name }}</h1>
+    <p>Click on titles to expand.</p>
+    <div id="accordion">
+      <div class="card">
+        <div class="card-header" id="heading0">
+          {% if can_edit %}
+          <div class="btn-toolbar float-right">
+            <div class="btn-group">
+              <a href="{% url 'character-edit' character.name %}" role="button" class="btn btn-primary">Edit character</a>
+            </div>
+          </div>
+          {% endif %}
+          <h4 class="mb-0 cursor-pointer" data-toggle="collapse" data-target="#collapse0" aria-expanded="true" aria-controls="collapse0">
+            Character details
+          </h4>
+        </div>
 
+        <div id="collapse0" class="collapse show" aria-labelledby="heading0" data-parent="#accordion">
+          <div class="card-body">
+            <dl class="row">
+              <dt class="col-sm-3">Name</dt>
+              <dd class="col-sm-9">{{ character.name }}</dd>
+              <dt class="col-sm-3">Owner</dt>
+              <dd class="col-sm-9">{{ character.owner.first_name }}</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" id="heading1">
+          {% if can_edit %}
+          <div class="btn-toolbar float-right">
+            <div class="btn-group">
+              <a href="{% url 'character-jobs-edit' character.name %}" role="button" class="btn btn-primary">Edit jobs</a>
+            </div>
+          </div>
+          {% endif %}
+          <h4 class="mb-0 cursor-pointer" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
+              Jobs
+          </h4>
+        </div>
+
+        <div id="collapse1" class="collapse hide" aria-labelledby="heading1" data-parent="#accordion">
+          <div class="card-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Job</th>
+                  <th scope="col">Level</th>
+                  <th scope="col">Mastered</th>
+                  <th scope="col">Event status</th>
+                  <th scope="col">Gearing status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for cjob in character.characterjobs.all %}
+                <tr>
+                  <th scope="row">{{ cjob.job.name }}</th>
+                  <td>{{ cjob.level }}</td>
+                  <td>{{ cjob.mastered_html|safe }}</td>
+                  <td>{{ cjob.event_status_simple_display }}</td>
+                  <td>{{ cjob.gear_status_simple_display }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" id="heading2">
+          {% if can_edit %}
+          <div class="btn-toolbar float-right">
+            <div class="btn-group">
+              <a href="{% url 'character-omen-bosses-wishlist' character.name %}" role="button" class="btn btn-primary">Edit wishes for Omen bosses</a>
+            </div>
+          </div>
+          {% endif %}
+          <h4 class="mb-0 cursor-pointer pull-left" data-toggle="collapse" data-target="#collapse2" aria-expanded="true" aria-controls="collapse2">
+            Omen Bosses Wishes
+          </h4>
+        </div>
+        <div id="collapse2" class="collapse hide" aria-labelledby="heading2" data-parent="#accordion">
+          <div class="card-body">
+            <p>Omen bosses {{ character.name }} wants killed:</p>
+            <p>
+              <strong>First choice</strong>:
+              {{ character.omenbosswishlist.get_first_choice_display|default:"None selected" }}
+            </p>
+            <p>
+              <strong>Second choice</strong>:
+              {{ character.omenbosswishlist.get_second_choice_display|default:"None selected" }}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" id="heading3">
+          {% if can_edit %}
+          <div class="btn-toolbar float-right">
+            <div class="btn-group">
+              <a href="{% url 'character-omen-bosses-clears' character.name %}" role="button" class="btn btn-primary">Edit clears/KIs for Omen bosses</a>
+            </div>
+          </div>
+          {% endif %}
+          <h4 class="mb-0 cursor-pointer pull-left" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse3">
+            Omen Bosses Clears / Ou pop KIs
+          </h4>
+        </div>
+        <div id="collapse3" class="collapse hide" aria-labelledby="heading3" data-parent="#accordion">
+          <div class="card-body text-center">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Fu</th>
+                  <th scope="col">Kyou</th>
+                  <th scope="col">Kei</th>
+                  <th scope="col">Gin</th>
+                  <th scope="col">Kin</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="fa fa-{% if character.omenbossesclears.fu %}check text-success{%else%}times text-danger{%endif%}"></span></td>
+                  <td><span class="fa fa-{% if character.omenbossesclears.kyou %}check text-success{%else%}times text-danger{%endif%}"></span></td>
+                  <td><span class="fa fa-{% if character.omenbossesclears.kei %}check text-success{%else%}times text-danger{%endif%}"></span></td>
+                  <td><span class="fa fa-{% if character.omenbossesclears.gin %}check text-success{%else%}times text-danger{%endif%}"></span></td>
+                  <td><span class="fa fa-{% if character.omenbossesclears.kin %}check text-success{%else%}times text-danger{%endif%}"></span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" id="heading4">
+          {% if can_edit %}
+          <div class="btn-toolbar float-right">
+            <div class="btn-group">
+              <a href="{% url 'character-woc-pops' character.name %}" role="button" class="btn btn-primary">
+                Edit WoC KIs
+              </a>
+            </div>
+          </div>
+          {% endif %}
+          <h4 class="mb-0 cursor-pointer pull-left" data-toggle="collapse" data-target="#collapse4" aria-expanded="true" aria-controls="collapse4">
+            Warder of Courage pop KIs
+          </h4>
+        </div>
+        <div id="collapse4" class="collapse hide" aria-labelledby="heading4" data-parent="#accordion">
+          <div class="card-body">
+            <p>
+              <strong>Primal nazar (full pop item)</strong>:
+              <span class="fa fa-{% if character.warderofcouragepops.primal_nazar %}check text-success{%else%}times text-danger{%endif%}"></span>
+            </p>
+            <table class="table text-center">
+              <thead>
+                <tr>
+                  <th scope="row">Primary <br/> Warder of Temperance</th>
+                  <th scope="row">Secondary<br/> Warder of Fortitude</th>
+                  <th scope="row">Tertiary<br/> Warder of Faith</th>
+                  <th scope="row">Quaternary<br/> Warder of Justice</th>
+                  <th scope="row">Quinary<br/> Warder of Hope</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="fa fa-{% if character.warderofcouragepops.primary_nazar %}check text-success{%else%}times text-danger{%endif%}"></span></td>
+                  <td><span class="fa fa-{% if character.warderofcouragepops.secondary_nazar %}check text-success{%else%}times text-danger{%endif%}"></span></td>
+                  <td><span class="fa fa-{% if character.warderofcouragepops.tertiary_nazar %}check text-success{%else%}times text-danger{%endif%}"></span></td>
+                  <td><span class="fa fa-{% if character.warderofcouragepops.quaternary_nazar %}check text-success{%else%}times text-danger{%endif%}"></span></td>
+                  <td><span class="fa fa-{% if character.warderofcouragepops.quinary_nazar %}check text-success{%else%}times text-danger{%endif%}"></span></td>
+                </tr>
+                <tr>
+                  <th scope="row">Senary<br/> Warder of Prudence</th>
+                  <th scope="row">Septenary<br/> Warder of Love</th>
+                  <th scope="row">Octonary<br/> Warder of Dignity</th>
+                  <th scope="row">Nonary<br/> Warder of Loyalty</th>
+                  <th scope="row">Denary<br/> Warder of Mercy</th>
+                </tr>
+                <tr>
+                  <td><span class="fa fa-{% if character.warderofcouragepops.senary_nazar %}check text-success{%else%}times text-danger{%endif%}"></span></td>
+                  <td><span class="fa fa-{% if character.warderofcouragepops.septenary_nazar %}check text-success{%else%}times text-danger{%endif%}"></span></td>
+                  <td><span class="fa fa-{% if character.warderofcouragepops.octonary_nazar %}check text-success{%else%}times text-danger{%endif%}"></span></td>
+                  <td><span class="fa fa-{% if character.warderofcouragepops.nonary_nazar %}check text-success{%else%}times text-danger{%endif%}"></span></td>
+                  <td><span class="fa fa-{% if character.warderofcouragepops.denary_nazar %}check text-success{%else%}times text-danger{%endif%}"></span></td>
+                </tr>
+              </tbody>
+            </table>
+                  
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

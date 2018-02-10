@@ -18,3 +18,7 @@ body {
 .fa.fa-star.master {
     color: rgb(249, 194, 55);
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}

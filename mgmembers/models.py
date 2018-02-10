@@ -4,6 +4,7 @@ from django.core.validators import MaxValueValidator
 
 import uuid
 
+
 class Character(models.Model):
     owner = models.ForeignKey(
         User,
@@ -266,3 +267,111 @@ class OneTimeLoginNonce(models.Model):
 
     def __str__(self):
         return 'Login nonce for %s' % self.target_user
+
+
+class OmenBossesClears(models.Model):
+    character = models.OneToOneField(
+        Character,
+        on_delete=models.CASCADE
+    )
+    fu = models.BooleanField(
+        verbose_name='Fu',
+        default=False
+    )
+    kyou = models.BooleanField(
+        verbose_name='Kyou',
+        default=False
+    )
+    kei = models.BooleanField(
+        verbose_name='Kei',
+        default=False
+    )
+    gin = models.BooleanField(
+        verbose_name='Gin',
+        default=False
+    )
+    kin = models.BooleanField(
+        verbose_name='Kin',
+        default=False
+    )
+
+
+class OmenBossWishlist(models.Model):
+    FU = 1
+    KYOU = 2
+    KEI = 3
+    GIN = 4
+    KIN = 5
+    choices = (
+        (None, '- None -'),
+        (FU, 'Fu (BST, DRG, SMN, PUP)'),
+        (KYOU, 'Kyou (BRD, COR, RNG, GEO)'),
+        (KEI, 'Kei (SCH, BLM, WHM, RDM, BLU)'),
+        (GIN, 'Gin (THF, NIN, DNC, RUN)'),
+        (KIN, 'Kin (WAR, MNK, PLD, DRK, SAM)'),
+    )
+    character = models.OneToOneField(
+        Character,
+        on_delete=models.CASCADE
+    )
+    first_choice = models.IntegerField(
+        choices=choices,
+        null=True,
+        default=None
+    )
+    second_choice = models.IntegerField(
+        choices=choices,
+        null=True,
+        default=None
+    )
+
+
+class WarderOfCouragePops(models.Model):
+    character = models.OneToOneField(
+        Character,
+        on_delete=models.CASCADE
+    )
+    primal_nazar = models.BooleanField(
+        verbose_name='Primal Nazard / Full pop item',
+        default=False
+    )
+    primary_nazar = models.BooleanField(
+        verbose_name='Primary / Warder of Temperance',
+        default=False
+    )
+    secondary_nazar = models.BooleanField(
+        verbose_name='Secondary / Warder of Fortitude',
+        default=False
+    )
+    tertiary_nazar = models.BooleanField(
+        verbose_name='Tertiary / Warder of Faith',
+        default=False
+    )
+    quaternary_nazar = models.BooleanField(
+        verbose_name='Quaternary / Warder of Justice',
+        default=False
+    )
+    quinary_nazar = models.BooleanField(
+        verbose_name='Quinary / Warder of Hope',
+        default=False
+    )
+    senary_nazar = models.BooleanField(
+        verbose_name='Senary / Warder of Prudence',
+        default=False
+    )
+    septenary_nazar = models.BooleanField(
+        verbose_name='Septenary / Warder of Love',
+        default=False
+    )
+    octonary_nazar = models.BooleanField(
+        verbose_name='Octonary / Warder of Dignity',
+        default=False
+    )
+    nonary_nazar = models.BooleanField(
+        verbose_name='Nonary / Warder of Loyalty',
+        default=False
+    )
+    denary_nazar = models.BooleanField(
+        verbose_name='Denary / Warder of Mercy',
+        default=False
+    )

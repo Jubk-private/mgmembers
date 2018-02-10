@@ -4,12 +4,12 @@
 {% block content %}
   <div class="row text-left">
     <div class="col-md-12">
-      <h2>Edit {{ character.name }}</h2>
-      <form method="post" role="form" id="charactereditform">
+      <h2>Select Omen bosses clears for {{ view.character.name }}</h2>
+      <form method="post" role="form" id="omenbossesclearsform">
         {% csrf_token %}
         {{ form|bootstrap }}
         <button type="submit" role="button" class="btn btn-primary">Save changes</button>
-        <a href="{% url 'character' character.name %}" role="button" class="btn btn-danger">Cancel</a>
+        <a href="{% url 'character' view.character.name %}" role="button" class="btn btn-danger">Cancel</a>
       </form>
     </div>
   </div>

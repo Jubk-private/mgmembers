@@ -300,3 +300,81 @@ class ChangePasswordView(FormView):
 
     def get_success_url(self):
         return reverse('home')
+
+
+class OmenBossWishlistView(UpdateView):
+    model = mgmodels.OmenBossWishlist
+    template_name = 'mgmembers/omenbosswishlist.html'
+    fields = ('first_choice', 'second_choice')
+
+    def get_object(self):
+        try:
+            self.character = mgmodels.Character.objects.get(
+                name=self.kwargs.get("name")
+            )
+        except mgmodels.Character.DoesNotExist:
+            raise Http404("Character not found")
+
+        if hasattr(self.character, 'omenbosswishlist'):
+            return self.character.omenbosswishlist
+        else:
+            return self.model(character=self.character)
+
+    def get_success_url(self):
+        return reverse('character', args=[self.character.name])
+
+
+class OmenBossesClearsView(UpdateView):
+    model = mgmodels.OmenBossesClears
+    template_name = 'mgmembers/omenbossesclears.html'
+    fields = ('fu', 'kyou', 'kei', 'gin', 'kin')
+
+    def get_object(self):
+        try:
+            self.character = mgmodels.Character.objects.get(
+                name=self.kwargs.get("name")
+            )
+        except mgmodels.Character.DoesNotExist:
+            raise Http404("Character not found")
+
+        if hasattr(self.character, 'omenbossesclears'):
+            return self.character.omenbossesclears
+        else:
+            return self.model(character=self.character)
+
+    def get_success_url(self):
+        return reverse('character', args=[self.character.name])
+
+
+class WarderOfCouragePopsView(UpdateView):
+    model = mgmodels.WarderOfCouragePops
+    template_name = 'mgmembers/warderofcouragepops.html'
+    fields = (
+        'primal_nazar',
+        'primary_nazar',
+        'secondary_nazar',
+        'tertiary_nazar',
+        'quaternary_nazar',
+        'quinary_nazar',
+        'senary_nazar',
+        'septenary_nazar',
+        'octonary_nazar',
+        'nonary_nazar',
+        'denary_nazar',
+    )
+
+    def get_object(self):
+        try:
+            self.character = mgmodels.Character.objects.get(
+                name=self.kwargs.get("name")
+            )
+        except mgmodels.Character.DoesNotExist:
+            raise Http404("Character not found")
+
+        if hasattr(self.character, 'warderofcouragepops'):
+            return self.character.warderofcouragepops
+        else:
+            return self.model(character=self.character)
+
+    def get_success_url(self):
+        return reverse('character', args=[self.character.name])

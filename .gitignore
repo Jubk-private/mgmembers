@@ -94,3 +94,6 @@ db.sqlite3
 
 ### OpenOffice ###
 .~lock.*#
+
+### application ###
+/mgmembers/migrations
