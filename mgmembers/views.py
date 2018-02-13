@@ -15,8 +15,11 @@ from django.views.generic import DetailView
 from django.views.generic import FormView
 from django.views.generic import TemplateView
 from django.views.generic import UpdateView
+import datetime
 import mgmembers.forms as mgforms
 import mgmembers.models as mgmodels
+import pytz
+import re
 
 
 class IndexView(TemplateView):
@@ -26,6 +29,18 @@ class IndexView(TemplateView):
         kwargs['characters'] = mgmodels.Character.objects.all().order_by(
             'name'
         )
+
+        timezones = []
+        for tz in pytz.common_timezones:
+            offset = datetime.datetime.now(
+                pytz.timezone(tz)
+            ).strftime('%z')
+            timezones.append(
+                (tz, "(GMT " + offset[:1] + str(int(offset[1:3])) + ")")
+            )
+            timezones.sort(key=lambda x: x[0])
+
+        kwargs['timezones'] = timezones
 
         return super().get_context_data(**kwargs)
 
