@@ -393,3 +393,35 @@ class WarderOfCouragePopsView(UpdateView):
 
     def get_success_url(self):
         return reverse('character', args=[self.character.name])
+
+
+class GearChoicesOverview(TemplateView):
+    template_name = 'mgmembers/gear_overview.html'
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+
+        jobs = []
+
+        for val, desc in mgmodels.Job.job_choices:
+            if not val:
+                continue
+
+            charjobs = mgmodels.CharacterJob.objects.filter(job__name=val)
+            cj = mgmodels.CharacterJob
+
+            jobs.append({
+                'name': val,
+                'primary': [
+                    x.character
+                    for x in charjobs.filter(gear_status=cj.GEAR_PRIMARY)
+                ],
+                'secondary': [
+                    x.character
+                    for x in charjobs.filter(gear_status=cj.GEAR_SECONDARY)
+                ],
+            })
+
+            result['jobs'] = jobs
+
+        return result

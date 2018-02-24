@@ -64,4 +64,7 @@ urlpatterns = [
     url(r'^login_nonce/login/(?P<pk>[^/]+)/?$',
         mgviews.LoginByNonceView.as_view(),
         name='loginnonce-login'),
+    url(r'^gear-choices-overview/?$',
+        mgviews.GearChoicesOverview.as_view(),
+        name='gear-choices-overview'),
 ]
