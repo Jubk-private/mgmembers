@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models import Q
 from django.contrib.auth import login
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import SetPasswordForm
@@ -435,7 +436,7 @@ class GearChoicesOverview(TemplateView):
                 ],
             })
 
-            result['jobs'] = jobs
+        result['jobs'] = jobs
 
         return result
 
@@ -467,3 +468,70 @@ class DynamisGearView(UpdateView):
     def get_success_url(self):
         return reverse('character', args=[self.character.name])
 
+
+class OmenScalesOverview(TemplateView):
+    template_name = 'mgmembers/gear_omen_scales.html'
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+
+        bosses = []
+
+        for val, name in mgmodels.OmenBossWishlist.choices:
+            if val is None:
+                continue
+            bosses.append({
+                'name': name,
+                'characters': mgmodels.Character.objects.filter(
+                    Q(omenbosswishlist__first_choice=val) |
+                    Q(omenbosswishlist__second_choice=val)
+                )
+            })
+
+        result['bosses'] = bosses
+
+        return result
+
+
+class DynamisGearOverview(TemplateView):
+    template_name = 'mgmembers/gear_dynamis_overview.html'
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+
+
+        sdo_jobs = []
+        bastok_jobs = []
+        windurst_jobs = []
+
+        for val, desc in mgmodels.Job.job_choices:
+            if not val:
+                continue
+
+            sdo_jobs.append({
+                'name': val,
+                'characters': mgmodels.Character.objects.filter(
+                    Q(dynamisgearchoices__sandoria_primary__name=val) |
+                    Q(dynamisgearchoices__sandoria_secondary__name=val)
+                )
+            })
+            bastok_jobs.append({
+                'name': val,
+                'characters': mgmodels.Character.objects.filter(
+                    Q(dynamisgearchoices__bastok_primary__name=val) |
+                    Q(dynamisgearchoices__bastok_secondary__name=val)
+                )
+            })
+            windurst_jobs.append({
+                'name': val,
+                'characters': mgmodels.Character.objects.filter(
+                    Q(dynamisgearchoices__windurst_primary__name=val) |
+                    Q(dynamisgearchoices__windurst_secondary__name=val)
+                )
+            })
+
+        result['sdo_jobs'] = sdo_jobs
+        result['bastok_jobs'] = bastok_jobs
+        result['windurst_jobs'] = windurst_jobs
+
+        return result

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row text-left">
+  <div class="col-md-12">
+    <h1>Omen scales overview</h1>
+    {% if request.user.is_authenticated %}
+    <p>
+        Click on the links below to edit Omen scale preferences for your
+        characters.
+    </p>
+    <ul>
+        {% for x in request.user.characters.all %}
+        <li><a href="{% url 'character-omen-bosses-wishlist' x.name %}">{{ x.name }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Boss</th>
+          <th scope="col">Characters</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for boss in bosses %}
+        <tr>
+          <th scope="row">{{ boss.name }}</td>
+          <td>{{ boss.characters|join:", " }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

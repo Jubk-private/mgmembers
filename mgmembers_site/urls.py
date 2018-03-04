@@ -70,4 +70,10 @@ urlpatterns = [
     url(r'^gear-choices-overview/?$',
         mgviews.GearChoicesOverview.as_view(),
         name='gear-choices-overview'),
+    url(r'^gear-omen-scales/?$',
+        mgviews.OmenScalesOverview.as_view(),
+        name='gear-omen-scales'),
+    url(r'^gear-dynamis-overview/?$',
+        mgviews.DynamisGearOverview.as_view(),
+        name='gear-dynamis-overview'),
 ]

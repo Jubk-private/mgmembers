@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row text-left">
+  <div class="col-md-12">
+    <h1>Omen scales overview</h1>
+    {% if request.user.is_authenticated %}
+    <p>
+        Click on the links below to edit Dynamis drop preferences for your
+        characters.
+    </p>
+    <ul>
+        {% for x in request.user.characters.all %}
+        <li><a href="{% url 'character-dynamis-gear' x.name %}">{{ x.name }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <h2>San d'Oria</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Job</th>
+          <th scope="col">Characters</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for job in sdo_jobs %}
+        {% if job.characters %}
+        <tr>
+          <th scope="row">{{ job.name }}</td>
+          <td>{{ job.characters|join:", " }}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+    <h2>Bastok</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Job</th>
+          <th scope="col">Characters</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for job in bastok_jobs %}
+        {% if job.characters %}
+        <tr>
+          <th scope="row">{{ job.name }}</td>
+          <td>{{ job.characters|join:", " }}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+    <h2>Windurst</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Job</th>
+          <th scope="col">Characters</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for job in windurst_jobs %}
+        {% if job.characters %}
+        <tr>
+          <th scope="row">{{ job.name }}</td>
+          <td>{{ job.characters|join:", " }}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
