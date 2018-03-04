@@ -10,6 +10,32 @@
     <p>
       For dynamis drops see <a href="{% url 'gear-dynamis-overview' %}">Dynamis gear overview</a>.
     </p>
+    <p>
+      <button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#collapse-filter" aria-expanded="false" aria-controls="collapse-filter">
+        Quickfilter by job
+      </button>
+    </p>
+    <div class="collapse" id="collapse-filter">
+      <div  class="card card-block" style="padding: 1em;">
+      <form name="jobsfilterform" id="jobsfilterform">
+        {% for job in jobs %}
+        <label for="filterjob_{{ job.name }}">
+          <input type="checkbox" name="filterjob" id="filterjob_{{ job.name }}" value="{{ job.name }}" />{{ job.name }}
+        </label>
+        {% if forloop.counter|divisibleby:"11" %}
+        <br />
+        {%endif%}
+        {% endfor %}
+        <dl>
+          <dt>Primary jobs</dt>
+          <dd id="primary-jobs-output"></dd>
+          <dt>Secondary jobs</dt>
+          <dd id="secondary-jobs-output"></dd>
+        </dl>
+        <button class="btn btn-sm btn-primary" type="button" id="clear-filter-button">Clear all</button>
+      </form>
+      </div>
+    </div>
     <table class="table">
       <thead>
         <tr>
@@ -18,16 +44,75 @@
           <th scope="col">Secondary</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="jobstablebody">
         {% for job in jobs %}
         <tr>
-          <td><strong>{{ job.name }}</strong></td>
-          <td>{{ job.primary|join:", " }}</td>
-          <td>{{ job.secondary|join:", " }}</td>
+          <th scope="row">{{ job.name }}</th>
+          <td class="primaryjobs">{{ job.primary|join:", " }}</td>
+          <td class="secondaryjobs">{{ job.secondary|join:", " }}</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
 </div>
+{% endblock %}
+{% block extra_scripts %}
+<script type="text/javascript"><!--
+(function($) {
+  $('#jobsfilterform input').on("change", function() {
+    var jobsSelected = false,
+        activeJobs = {},
+        primaryJobs = [],
+        seenPrimary = {},
+        secondaryJobs = [],
+        seenSecondary = {};
+    $.each($('#jobsfilterform input:checked'), function() {
+      jobsSelected = true;
+      activeJobs[$(this).val()] = true;
+    });
+    if(jobsSelected) {
+      $.each($('#jobstablebody th'), function() {
+        var $this = $(this),
+            $parent = $this.parent(),
+            job = $this.text();
+        if(activeJobs[job]) {
+          $parent.show();
+          $.each(
+            $parent.find("td.primaryjobs").first().text().split(/,\s*/),
+            function() {
+              if(this.length && !seenPrimary[this]) {
+                primaryJobs.push(this)
+              }
+            }
+          )
+          $.each(
+            $parent.find("td.secondaryjobs").first().text().split(/,\s*/),
+            function() {
+              if(this.length  && !seenSecondary[this]) {
+                secondaryJobs.push(this)
+              }
+            }
+          )
+        } else {
+          $parent.hide();
+        }
+      });
+    } else {
+      $('#jobstablebody tr').show();
+    }
+    primaryJobs.sort()
+    secondaryJobs.sort()
+    $('#primary-jobs-output').text(primaryJobs.join(", "));
+    $('#secondary-jobs-output').text(secondaryJobs.join(", "));
+  });
+  $('#clear-filter-button').on('click', function() {
+    $('#jobsfilterform input').each(function() {
+      $(this).removeAttr("checked");
+    });
+    $('#jobsfilterform input').last().trigger("change");
+    return false;
+  })
+})(jQuery);
+//--></script>
 {% endblock %}
