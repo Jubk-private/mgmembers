@@ -83,6 +83,7 @@
             function() {
               if(this.length && !seenPrimary[this]) {
                 primaryJobs.push(this)
+                seenPrimary[this] = true;
               }
             }
           )
@@ -91,6 +92,7 @@
             function() {
               if(this.length  && !seenSecondary[this]) {
                 secondaryJobs.push(this)
+                seenSecondary[this] = true;
               }
             }
           )
