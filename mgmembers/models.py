@@ -386,3 +386,108 @@ class WarderOfCouragePops(models.Model):
         verbose_name='Denary / Warder of Mercy',
         default=False
     )
+
+
+class DynamisGearChoices(models.Model):
+    character = models.OneToOneField(
+        Character,
+        on_delete=models.CASCADE
+    )
+
+    sandoria_primary = models.ForeignKey(
+        Job,
+        verbose_name="San d'Oria #1",
+        null=True,
+        default=None,
+        on_delete = models.CASCADE,
+        related_name="sdo_dyna_primary_choices",
+        related_query_name="sdo_dyna_primary_choice",
+    )
+    sandoria_secondary = models.ForeignKey(
+        Job,
+        verbose_name="San d'Oria #2",
+        null=True,
+        default=None,
+        on_delete = models.CASCADE,
+        related_name="sdo_dyna_secondary_choices",
+        related_query_name="sdo_dyna_secondary_choice",
+    )
+
+    bastok_primary = models.ForeignKey(
+        Job,
+        verbose_name="Bastok #1",
+        null=True,
+        default=None,
+        on_delete = models.CASCADE,
+        related_name="bastok_dyna_primary_choices",
+        related_query_name="bastok_dyna_primary_choice",
+    )
+    bastok_secondary = models.ForeignKey(
+        Job,
+        verbose_name="Bastok #2",
+        null=True,
+        default=None,
+        on_delete = models.CASCADE,
+        related_name="bastok_dyna_secondary_choices",
+        related_query_name="bastok_dyna_secondary_choice",
+    )
+
+    windurst_primary = models.ForeignKey(
+        Job,
+        verbose_name="Windurst #1",
+        null=True,
+        default=None,
+        on_delete = models.CASCADE,
+        related_name="windurst_dyna_primary_choices",
+        related_query_name="windurst_dyna_primary_choice",
+    )
+    windurst_secondary = models.ForeignKey(
+        Job,
+        verbose_name="Windurst #2",
+        null=True,
+        default=None,
+        on_delete = models.CASCADE,
+        related_name="windurst_dyna_secondary_choices",
+        related_query_name="windurst_dyna_secondary_choice",
+    )
+
+    @property
+    def sandoria_jobs(self):
+        return [
+            x.name
+            for x in (self.sandoria_primary, self.sandoria_secondary) if x
+        ]
+
+    @property
+    def bastok_jobs(self):
+        return [
+            x.name
+            for x in (self.bastok_primary, self.bastok_secondary) if x
+        ]
+
+    @property
+    def windurst_jobs(self):
+        return [
+            x.name
+            for x in (self.windurst_primary, self.windurst_secondary) if x
+        ]
+
+    @classmethod
+    def import_from_gear_choices(cls):
+        for character in Character.objects.all():
+            if hasattr(character, 'dynamisgearchoices'):
+                continue
+            
+            item = cls(character=character)
+
+            pjobs = tuple(character.primary_gear_jobs)
+            if len(pjobs) > 0:
+                item.sandoria_primary = pjobs[0]
+                item.bastok_primary = pjobs[0]
+                item.windurst_primary = pjobs[0]
+            if len(pjobs) > 1:
+                item.sandoria_secondary = pjobs[1]
+                item.bastok_secondary = pjobs[1]
+                item.windurst_secondary = pjobs[1]
+
+            item.save()

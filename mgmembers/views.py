@@ -438,3 +438,32 @@ class GearChoicesOverview(TemplateView):
             result['jobs'] = jobs
 
         return result
+
+class DynamisGearView(UpdateView):
+    model = mgmodels.DynamisGearChoices
+    template_name = 'mgmembers/dynamisgear.html'
+    fields = (
+        'sandoria_primary',
+        'sandoria_secondary',
+        'bastok_primary',
+        'bastok_secondary',
+        'windurst_primary',
+        'windurst_secondary',
+    )
+
+    def get_object(self):
+        try:
+            self.character = mgmodels.Character.objects.get(
+                name=self.kwargs.get("name")
+            )
+        except mgmodels.Character.DoesNotExist:
+            raise Http404("Character not found")
+
+        if hasattr(self.character, 'dynamisgearchoices'):
+            return self.character.dynamisgearchoices
+        else:
+            return self.model(character=self.character)
+
+    def get_success_url(self):
+        return reverse('character', args=[self.character.name])
+

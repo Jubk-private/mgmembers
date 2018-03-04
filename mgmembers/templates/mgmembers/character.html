@@ -196,6 +196,49 @@
           </div>
         </div>
       </div>
+      <div class="card">
+        <div class="card-header" id="heading5">
+          {% if can_edit %}
+          <div class="btn-toolbar float-right">
+            <div class="btn-group">
+              <a href="{% url 'character-dynamis-gear' character.name %}" role="button" class="btn btn-primary">
+                Edit Dynamis gear
+              </a>
+            </div>
+          </div>
+          {% endif %}
+          <h4 class="mb-0 cursor-pointer pull-left" data-toggle="collapse" data-target="#collapse5" aria-expanded="true" aria-controls="collapse5">
+            Dynamis Gear Choices
+          </h4>
+        </div>
+        <div id="collapse5" class="collapse hide" aria-labelledby="heading5" data-parent="#accordion">
+          <div class="card-body">
+            <table class="table text-center">
+              <thead>
+                <tr>
+                  <th scope="col">Zone</th>
+                  <th scope="col">Jobs</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">San d'Oria</td>
+                  <td>{{ character.dynamisgearchoices.sandoria_jobs|join:", " }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Bastok</td>
+                  <td>{{ character.dynamisgearchoices.bastok_jobs|join:", " }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Windurst</td>
+                  <td>{{ character.dynamisgearchoices.windurst_jobs|join:", " }}</td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+
+{% block content %}
+  <div class="row text-left">
+    <div class="col-md-12">
+      <h2>Select which gear you want from dynamis runs</h2>
+      <form method="post" role="form" id="dynagearform">
+        {% csrf_token %}
+        {{ form|bootstrap }}
+        <button type="submit" role="button" class="btn btn-primary">Save changes</button>
+        <a href="{% url 'character' view.character.name %}" role="button" class="btn btn-danger">Cancel</a>
+      </form>
+    </div>
+  </div>
+{% endblock %}
