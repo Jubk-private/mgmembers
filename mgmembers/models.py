@@ -76,6 +76,17 @@ class Character(models.Model):
             return False
         return self.owner.pk == user.pk
 
+    def limit_to_two_primary(self):
+        pjobs = CharacterJob.objects.filter(
+            character=self,
+            gear_status = CharacterJob.GEAR_PRIMARY
+        )
+        if len(pjobs) > 2:
+            for x in pjobs[2:]:
+                print("Changing %s %s to secondary" % (x.character, x.job))
+                x.gear_status = CharacterJob.GEAR_SECONDARY
+                x.save()
+
     def __str__(self):
         return self.name
 

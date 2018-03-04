@@ -7,8 +7,6 @@
       <h2>Edit jobs for {{ character.name }}</h2>
       <form method="post" role="form" id="loginform">
         {% csrf_token %}
-        {{ form.non_form_errors }}
-        {{ form.errors }}
         {{ form.management_form }}
         <table class="table">
           <thead>
@@ -28,7 +26,15 @@
                 {{ subform.character.as_hidden }}
                 {{ subform.job.as_hidden }}
                 {{ subform.job.name }}
-                {{ subform.non_form_errors }}
+                {% if subform.errors %}
+                <ul class="errorlist nonfield text-danger">
+                  {% for x in subform.errors.values %}
+                    {% for y in x %}
+                    <li>{{ y }}</li>
+                    {% endfor %}
+                  {% endfor %}
+                </ul>
+                {% endif %}
               </th>
               <td>{{ subform.level }}</td>
               <td>{{ subform.mastered }}</td>

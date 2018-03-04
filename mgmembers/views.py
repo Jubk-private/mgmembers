@@ -218,6 +218,19 @@ class JobsEditView(UpdateView):
         return result
 
     def form_valid(self, form):
+        primary_status = mgmodels.CharacterJob.GEAR_PRIMARY
+        primary_gear_count = 0
+        for x in form:
+            if x.instance.gear_status == mgmodels.CharacterJob.GEAR_PRIMARY:
+                primary_gear_count = primary_gear_count + 1
+                if primary_gear_count > 2:
+                    x.add_error(
+                        None, "You can only have two primary gear jobs"
+                    )
+
+        if primary_gear_count > 2:
+            return self.form_invalid(form)
+
         # Save what was created, but only if level is not none
         for x in form:
             if x.instance.pk is not None:
