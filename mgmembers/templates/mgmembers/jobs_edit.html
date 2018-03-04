@@ -5,6 +5,11 @@
   <div class="row text-left">
     <div class="col-md-12">
       <h2>Edit jobs for {{ character.name }}</h2>
+      <p>
+        The gear choices here do not count for dynamis drops. To edit your
+        Dynamis gear preferences go to
+        <a href="{% url 'character-dynamis-gear' character.name%}">Dynamis Gear Choices</a>.
+      </p>
       <form method="post" role="form" id="loginform">
         {% csrf_token %}
         {{ form.management_form }}
