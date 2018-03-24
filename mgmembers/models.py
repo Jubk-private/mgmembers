@@ -451,6 +451,25 @@ class DynamisGearChoices(models.Model):
         related_query_name="windurst_dyna_secondary_choice",
     )
 
+    jeuno_primary = models.ForeignKey(
+        Job,
+        verbose_name="Jeuno #1",
+        null=True,
+        default=None,
+        on_delete = models.CASCADE,
+        related_name="jeuno_dyna_primary_choices",
+        related_query_name="jeuno_dyna_primary_choice",
+    )
+    jeuno_secondary = models.ForeignKey(
+        Job,
+        verbose_name="Jeuno #2",
+        null=True,
+        default=None,
+        on_delete = models.CASCADE,
+        related_name="jeuno_dyna_secondary_choices",
+        related_query_name="jeuno_dyna_secondary_choice",
+    )
+
     @property
     def sandoria_jobs(self):
         return [
@@ -470,6 +489,13 @@ class DynamisGearChoices(models.Model):
         return [
             x.name
             for x in (self.windurst_primary, self.windurst_secondary) if x
+        ]
+
+    @property
+    def jeuno_jobs(self):
+        return [
+            x.name
+            for x in (self.jeuno_primary, self.jeuno_secondary) if x
         ]
 
     @classmethod

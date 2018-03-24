@@ -30,8 +30,15 @@
           <li class="nav-item">
             <a class="nav-link" href="/home/">Home</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'gear-choices-overview' %}">Gear choices overview</a>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="geardropdowntoggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              Gear choices overview
+            </a>
+            <div class="dropdown-menu" aria-labelledby="geardropdowntoggle">
+              <a class="dropdown-item" href="{% url 'gear-choices-overview' %}">General</a>
+              <a class="dropdown-item" href="{% url 'gear-omen-scales' %}">Omen</a>
+              <a class="dropdown-item" href="{% url 'gear-dynamis-overview' %}">Dynamis</a>
+            </div>
           </li>
           {% endif %}
         </ul>

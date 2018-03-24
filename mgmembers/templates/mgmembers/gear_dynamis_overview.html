@@ -3,7 +3,7 @@
 {% block content %}
 <div class="row text-left">
   <div class="col-md-12">
-    <h1>Omen scales overview</h1>
+    <h1>Dynamis choices overview</h1>
     {% if request.user.is_authenticated %}
     <p>
         Click on the links below to edit Dynamis drop preferences for your
@@ -15,63 +15,135 @@
         {% endfor %}
     </ul>
     {% endif %}
-    <h2>San d'Oria</h2>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Job</th>
-          <th scope="col">Characters</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for job in sdo_jobs %}
-        {% if job.characters %}
-        <tr>
-          <th scope="row">{{ job.name }}</td>
-          <td>{{ job.characters|join:", " }}</td>
-        </tr>
-        {% endif %}
-        {% endfor %}
-      </tbody>
-    </table>
-    <h2>Bastok</h2>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Job</th>
-          <th scope="col">Characters</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for job in bastok_jobs %}
-        {% if job.characters %}
-        <tr>
-          <th scope="row">{{ job.name }}</td>
-          <td>{{ job.characters|join:", " }}</td>
-        </tr>
-        {% endif %}
-        {% endfor %}
-      </tbody>
-    </table>
-    <h2>Windurst</h2>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Job</th>
-          <th scope="col">Characters</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for job in windurst_jobs %}
-        {% if job.characters %}
-        <tr>
-          <th scope="row">{{ job.name }}</td>
-          <td>{{ job.characters|join:", " }}</td>
-        </tr>
-        {% endif %}
-        {% endfor %}
-      </tbody>
-    </table>
+    <div id="accordion">
+      <div class="card">
+        <div class="card-header" id="sdoheading">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#scocontent" aria-expanded="true" aria-controls="scocontent">
+              <h3>San d'Oria</h3>
+            </button>
+          </h5>
+        </div>
+        <div id="scocontent" class="collapse" aria-labelledby="sdoheading" data-parent="#accordion">
+          <div class="card-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Job</th>
+                  <th scope="col">Characters</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for job in sdo_jobs %}
+                {% if job.characters %}
+                <tr>
+                  <th scope="row">{{ job.name }}</td>
+                  <td>{{ job.characters|join:", " }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" id="bastokheading">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#bastokcontent" aria-expanded="true" aria-controls="bastokcontent">
+              <h3>Bastok</h3>
+            </button>
+          </h5>
+        </div>
+        <div id="bastokcontent" class="collapse" aria-labelledby="bastokheading" data-parent="#accordion">
+          <div class="card-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Job</th>
+                  <th scope="col">Characters</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for job in bastok_jobs %}
+                {% if job.characters %}
+                <tr>
+                  <th scope="row">{{ job.name }}</td>
+                  <td>{{ job.characters|join:", " }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" id="windurstheading">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#windurstcontent" aria-expanded="true" aria-controls="windurstcontent">
+              <h3>Windurst</h3>
+            </button>
+          </h5>
+        </div>
+        <div id="windurstcontent" class="collapse" aria-labelledby="windurstheading" data-parent="#accordion">
+          <div class="card-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Job</th>
+                  <th scope="col">Characters</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for job in windurst_jobs %}
+                {% if job.characters %}
+                <tr>
+                  <th scope="row">{{ job.name }}</td>
+                  <td>{{ job.characters|join:", " }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" id="jeunoheading">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#jeunocontent" aria-expanded="true" aria-controls="jeunocontent">
+              <h3>Jeuno</h3>
+            </button>
+          </h5>
+        </div>
+        <div id="jeunocontent" class="collapse" aria-labelledby="jeunoheading" data-parent="#accordion">
+          <div class="card-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Job</th>
+                  <th scope="col">Characters</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for job in jeuno_jobs %}
+                {% if job.characters %}
+                <tr>
+                  <th scope="row">{{ job.name }}</td>
+                  <td>{{ job.characters|join:", " }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}
