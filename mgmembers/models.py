@@ -470,6 +470,25 @@ class DynamisGearChoices(models.Model):
         related_query_name="jeuno_dyna_secondary_choice",
     )
 
+    body_primary = models.ForeignKey(
+        Job,
+        verbose_name="Body #1",
+        null=True,
+        default=None,
+        on_delete = models.CASCADE,
+        related_name="body_dyna_primary_choices",
+        related_query_name="body_dyna_primary_choice",
+    )
+    body_secondary = models.ForeignKey(
+        Job,
+        verbose_name="Body #2",
+        null=True,
+        default=None,
+        on_delete = models.CASCADE,
+        related_name="body_dyna_secondary_choices",
+        related_query_name="body_dyna_secondary_choice",
+    )
+
     @property
     def sandoria_jobs(self):
         return [
@@ -493,6 +512,13 @@ class DynamisGearChoices(models.Model):
 
     @property
     def jeuno_jobs(self):
+        return [
+            x.name
+            for x in (self.jeuno_primary, self.jeuno_secondary) if x
+        ]
+
+    @property
+    def body_jobs(self):
         return [
             x.name
             for x in (self.jeuno_primary, self.jeuno_secondary) if x

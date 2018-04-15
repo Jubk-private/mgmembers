@@ -143,6 +143,41 @@
           </div>
         </div>
       </div>
+
+
+      <div class="card">
+        <div class="card-header" id="bodyheading">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#bodycontent" aria-expanded="true" aria-controls="bodycontent">
+              <h3>Body-drops</h3>
+            </button>
+          </h5>
+        </div>
+        <div id="bodycontent" class="collapse" aria-labelledby="bodyheading" data-parent="#accordion">
+          <div class="card-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Job</th>
+                  <th scope="col">Characters</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for job in body_jobs %}
+                {% if job.characters %}
+                <tr>
+                  <th scope="row">{{ job.name }}</td>
+                  <td>{{ job.characters|join:", " }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+
     </div>
   </div>
 </div>

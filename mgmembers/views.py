@@ -452,6 +452,8 @@ class DynamisGearView(UpdateView):
         'windurst_secondary',
         'jeuno_primary',
         'jeuno_secondary',
+        'body_primary',
+        'body_secondary',
     )
 
     def get_object(self):
@@ -506,6 +508,7 @@ class DynamisGearOverview(TemplateView):
         bastok_jobs = []
         windurst_jobs = []
         jeuno_jobs = []
+        body_jobs = []
 
         for val, desc in mgmodels.Job.job_choices:
             if not val:
@@ -539,10 +542,18 @@ class DynamisGearOverview(TemplateView):
                     Q(dynamisgearchoices__jeuno_secondary__name=val)
                 )
             })
+            body_jobs.append({
+                'name': val,
+                'characters': mgmodels.Character.objects.filter(
+                    Q(dynamisgearchoices__body_primary__name=val) |
+                    Q(dynamisgearchoices__body_secondary__name=val)
+                )
+            })
 
         result['sdo_jobs'] = sdo_jobs
         result['bastok_jobs'] = bastok_jobs
         result['windurst_jobs'] = windurst_jobs
         result['jeuno_jobs'] = jeuno_jobs
+        result['body_jobs'] = body_jobs
 
         return result
