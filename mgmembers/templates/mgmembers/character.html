@@ -201,9 +201,18 @@
           {% if can_edit %}
           <div class="btn-toolbar float-right">
             <div class="btn-group">
+              {% if character.dynamisgearchoices.can_be_edited %}
               <a href="{% url 'character-dynamis-gear' character.name %}" role="button" class="btn btn-primary">
                 Edit Dynamis gear
+                {% if character.dynamisgearchoices.recently_edited %}
+                  <div>
+                    Can be re-edited until {{ character.dynamisgearchoices.recent_edit_timeout }}.
+                  </div>
+                {% endif %}
               </a>
+              {% else %}
+                Editing is blocked until {{ character.dynamisgearchoices.next_edit_time }}
+              {% endif %}
             </div>
           </div>
           {% endif %}

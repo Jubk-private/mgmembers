@@ -10,12 +10,14 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.shortcuts import reverse
 from django.http import Http404
+from django.utils import timezone
 from django.views.generic import CreateView
 from django.views.generic import DeleteView
 from django.views.generic import DetailView
 from django.views.generic import FormView
 from django.views.generic import TemplateView
 from django.views.generic import UpdateView
+
 import datetime
 import mgmembers.forms as mgforms
 import mgmembers.models as mgmodels
@@ -456,6 +458,12 @@ class DynamisGearView(UpdateView):
         'body_secondary',
     )
 
+    def dispatch(self, request, *args, **kwargs):
+        if not self.get_object().can_be_edited:
+            return HttpResponseRedirect(self.get_success_url())
+
+        return super(DynamisGearView, self).dispatch(request, *args, **kwargs)
+
     def get_object(self):
         try:
             self.character = mgmodels.Character.objects.get(
@@ -468,6 +476,12 @@ class DynamisGearView(UpdateView):
             return self.character.dynamisgearchoices
         else:
             return self.model(character=self.character)
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.last_change = timezone.now()
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse('character', args=[self.character.name])

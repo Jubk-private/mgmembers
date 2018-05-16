@@ -1,8 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator
+from django.utils import timezone
 
 import uuid
+import datetime
+
+
+RECENT_EDIT_INTERVAL = datetime.timedelta(minutes=60)
+EDITING_BLOCKED_INTERVAL = datetime.timedelta(days=60)
 
 
 class Character(models.Model):
@@ -389,9 +395,15 @@ class WarderOfCouragePops(models.Model):
 
 
 class DynamisGearChoices(models.Model):
+
     character = models.OneToOneField(
         Character,
         on_delete=models.CASCADE
+    )
+
+    last_change = models.DateTimeField(
+        null=True,
+        default=None
     )
 
     sandoria_primary = models.ForeignKey(
@@ -488,6 +500,32 @@ class DynamisGearChoices(models.Model):
         related_name="body_dyna_secondary_choices",
         related_query_name="body_dyna_secondary_choice",
     )
+
+    @property
+    def can_be_edited(self):
+        return self.recently_edited or not self.blocked_from_editing
+
+    @property
+    def recently_edited(self):
+        return (
+            self.last_change and
+            (timezone.now() - self.last_change) < RECENT_EDIT_INTERVAL
+        )
+
+    @property
+    def blocked_from_editing(self):
+        return (
+            self.last_change and
+            (timezone.now() - self.last_change) <= EDITING_BLOCKED_INTERVAL
+        )
+
+    @property
+    def recent_edit_timeout(self):
+        return self.last_change + RECENT_EDIT_INTERVAL
+
+    @property
+    def next_edit_time(self):
+        return self.last_change + EDITING_BLOCKED_INTERVAL
 
     @property
     def sandoria_jobs(self):
