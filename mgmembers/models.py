@@ -559,7 +559,7 @@ class DynamisGearChoices(models.Model):
     def body_jobs(self):
         return [
             x.name
-            for x in (self.jeuno_primary, self.jeuno_secondary) if x
+            for x in (self.body_primary, self.body_secondary) if x
         ]
 
     @classmethod
