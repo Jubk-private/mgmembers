@@ -423,7 +423,10 @@ class GearChoicesOverview(TemplateView):
             if not val:
                 continue
 
-            charjobs = mgmodels.CharacterJob.objects.filter(job__name=val)
+            charjobs = mgmodels.CharacterJob.objects.filter(
+                job__name=val,
+                character__owner__is_active=True
+            )
             cj = mgmodels.CharacterJob
 
             jobs.append({
@@ -503,6 +506,8 @@ class OmenScalesOverview(TemplateView):
                 'characters': mgmodels.Character.objects.filter(
                     Q(omenbosswishlist__first_choice=val) |
                     Q(omenbosswishlist__second_choice=val)
+                ).filter(
+                    owner__is_active=True
                 )
             })
 
@@ -533,6 +538,8 @@ class DynamisGearOverview(TemplateView):
                 'characters': mgmodels.Character.objects.filter(
                     Q(dynamisgearchoices__sandoria_primary__name=val) |
                     Q(dynamisgearchoices__sandoria_secondary__name=val)
+                ).filter(
+                    owner__is_active=True
                 )
             })
             bastok_jobs.append({
@@ -540,6 +547,8 @@ class DynamisGearOverview(TemplateView):
                 'characters': mgmodels.Character.objects.filter(
                     Q(dynamisgearchoices__bastok_primary__name=val) |
                     Q(dynamisgearchoices__bastok_secondary__name=val)
+                ).filter(
+                    owner__is_active=True
                 )
             })
             windurst_jobs.append({
@@ -547,6 +556,8 @@ class DynamisGearOverview(TemplateView):
                 'characters': mgmodels.Character.objects.filter(
                     Q(dynamisgearchoices__windurst_primary__name=val) |
                     Q(dynamisgearchoices__windurst_secondary__name=val)
+                ).filter(
+                    owner__is_active=True
                 )
             })
             jeuno_jobs.append({
@@ -554,6 +565,8 @@ class DynamisGearOverview(TemplateView):
                 'characters': mgmodels.Character.objects.filter(
                     Q(dynamisgearchoices__jeuno_primary__name=val) |
                     Q(dynamisgearchoices__jeuno_secondary__name=val)
+                ).filter(
+                    owner__is_active=True
                 )
             })
             body_jobs.append({
@@ -561,6 +574,8 @@ class DynamisGearOverview(TemplateView):
                 'characters': mgmodels.Character.objects.filter(
                     Q(dynamisgearchoices__body_primary__name=val) |
                     Q(dynamisgearchoices__body_secondary__name=val)
+                ).filter(
+                    owner__is_active=True
                 )
             })
 
