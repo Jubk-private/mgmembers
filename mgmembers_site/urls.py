@@ -76,4 +76,7 @@ urlpatterns = [
     url(r'^gear-dynamis-overview/?$',
         mgviews.DynamisGearOverview.as_view(),
         name='gear-dynamis-overview'),
+    url(r'^about/?$',
+        mgviews.LSInformationView.as_view(),
+        name='about'),
 ]

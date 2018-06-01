@@ -586,3 +586,7 @@ class DynamisGearOverview(TemplateView):
         result['body_jobs'] = body_jobs
 
         return result
+
+
+class LSInformationView(TemplateView):
+    template_name = 'mgmembers/ls_information.html'
