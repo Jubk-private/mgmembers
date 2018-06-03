@@ -581,3 +581,6 @@ class DynamisGearChoices(models.Model):
                 item.windurst_secondary = pjobs[1]
 
             item.save()
+
+    def __unicode__(self):
+        return "DynamisGearChoices for %s" % self.character
