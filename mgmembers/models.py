@@ -582,5 +582,5 @@ class DynamisGearChoices(models.Model):
 
             item.save()
 
-    def __unicode__(self):
+    def __str__(self):
         return "DynamisGearChoices for %s" % self.character
