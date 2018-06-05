@@ -38,6 +38,13 @@
               frameborder="0"
               scrolling="yes"
       ></iframe>
+      {% if discord_link %}
+      <h1>Discord</h1>
+      <p>
+        Discord server link:
+        <a href="{{ discord_link }}">{{ discord_link }}</a>
+      </p>
+      {% endif %}
     {% endwith %}
     <h1>Members</h1>
     <table class="table">

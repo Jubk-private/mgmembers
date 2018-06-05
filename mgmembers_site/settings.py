@@ -138,6 +138,8 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger'
 }
 
+DISCORD_LINK = None
+
 LOCAL_SETTINGS_FILE = os.path.join(SITE_DIR, "local_settings.py")
 if os.path.exists(LOCAL_SETTINGS_FILE):
     from mgmembers_site.local_settings import *  # noqa

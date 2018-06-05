@@ -1,5 +1,6 @@
 from django import forms
 from django.db.models import Q
+from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import SetPasswordForm
@@ -44,6 +45,8 @@ class IndexView(TemplateView):
             timezones.sort(key=lambda x: x[0])
 
         kwargs['timezones'] = timezones
+        
+        kwargs['discord_link'] = settings.DISCORD_LINK
 
         return super().get_context_data(**kwargs)
 
