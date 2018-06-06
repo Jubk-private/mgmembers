@@ -38,7 +38,7 @@
               frameborder="0"
               scrolling="yes"
       ></iframe>
-      {% if discord_link %}
+      {% if discord_link and request.user.is_authenticated %}
       <h1>Discord</h1>
       <p>
         Discord server link:
