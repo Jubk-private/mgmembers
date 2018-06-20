@@ -79,4 +79,7 @@ urlpatterns = [
     url(r'^about/?$',
         mgviews.LSInformationView.as_view(),
         name='about'),
+    url(r'^dynamis_maps/?$',
+        mgviews.TemplateView.as_view(template_name='mgmembers/dynamis_maps.html'),
+        name='dynamis_maps'),
 ]

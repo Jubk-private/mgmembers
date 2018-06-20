@@ -14,6 +14,9 @@
         <li><a href="{% url 'character-dynamis-gear' x.name %}">{{ x.name }}</a></li>
         {% endfor %}
     </ul>
+    <p>
+      <a href="{% url 'dynamis_maps' %}">Click here to see maps with NM locations</a>
+    </p>
     {% endif %}
     <div id="accordion">
       <div class="card">
