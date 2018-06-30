@@ -27,7 +27,7 @@
       knownDrops = {
         "Fu: Niqmaddu Ring": "Warrior / Monk / Dark Knight / Samurai / Dragoon / Puppetmaster / Rune Fencer",
         "Fu: Shulmanu collar": "Beastmaster / Dragoon / Summoner / Puppetmaster",
-        "Fu: Nisroch jerkin": "Beastmaster / Dragoon / Summoner / Puppetmaster",
+        "Fu: Nisroch jerkin": "Ranger / Corsair",
         "Kyou: Enmerkar earring": "Beastmaster / Dragoon / Summoner / Puppetmaster",
         "Kyou: Iskur gorget": "Thief / Ranger / Ninja / Corsair",
         "Kyou: Udug jacket": "Beastmaster / Summoner / Puppetmaster",
