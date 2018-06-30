@@ -27,6 +27,10 @@ body {
   background-color: rgb(244, 248, 255);
 }
 
+body.gallery .row {
+  display: block;
+}
+
 #main-background {
   position: fixed;
   left: 55%;

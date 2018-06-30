@@ -17,7 +17,7 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body>
+  <body class="{% if request.META.PATH_INFO|slice:"11" == "/galleries/" %}gallery{% endif %}">
    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
       <a class="navbar-brand" href="/">MG-members</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,7 +77,7 @@
 
     <main role="main" class="container">
       <img id="main-background" src="{% static 'mgmembers/images/MG-DERP-mini.png' %}" />
-      <div class="starter-template">
+      <div>
         {% if messages %}
         <div class="row text-left">
           <div class="col-md-12">

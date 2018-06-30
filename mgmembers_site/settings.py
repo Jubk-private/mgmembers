@@ -18,6 +18,8 @@ import os
 SITE_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(SITE_DIR)
 
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = '/media/'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -40,9 +42,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'photologue',
+    'sortedm2m',
     'bootstrapform',
     'mgmembers',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
