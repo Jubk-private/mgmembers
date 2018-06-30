@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <div class="row text-left">
@@ -10,30 +11,51 @@
     <p>
       For dynamis drops see <a href="{% url 'gear-dynamis-overview' %}">Dynamis gear overview</a>.
     </p>
-    <p>
-      <button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#collapse-filter" aria-expanded="false" aria-controls="collapse-filter">
-        Quickfilter by job
-      </button>
-    </p>
-    <div class="collapse" id="collapse-filter">
-      <div  class="card card-block" style="padding: 1em;">
-      <form name="jobsfilterform" id="jobsfilterform">
-        {% for job in jobs %}
-        <label for="filterjob_{{ job.name }}">
-          <input type="checkbox" name="filterjob" id="filterjob_{{ job.name }}" value="{{ job.name }}" />{{ job.name }}
-        </label>
-        {% if forloop.counter|divisibleby:"11" %}
-        <br />
-        {%endif%}
-        {% endfor %}
-        <dl>
-          <dt>Primary jobs</dt>
-          <dd id="primary-jobs-output"></dd>
-          <dt>Secondary jobs</dt>
-          <dd id="secondary-jobs-output"></dd>
-        </dl>
-        <button class="btn btn-sm btn-primary" type="button" id="clear-filter-button">Clear all</button>
+    <div>
+      <div  class="card card-block">
+      <div class="card-header">Filter</div>
+      <form name="jobsfilterform" id="jobsfilterform" style="padding: 1em;">
+        <div class="form-group">
+          <label for="smartfilter">Select by smart filter</label>
+          <input type="text" class="form-control" id="smartfilter" aria-describedby="smartfilterhelp" placeholder="Input a list of jobs, for example one copy/pasted from BG-wiki">
+        </div>
+        <div class="form-group">
+          <label for="knowndrops">Select by known drops</label>
+          <select class="form-control" id="knowndrops">
+            <option>--</option>
+          </select>
+        </div>
+        <div class="form-group">
+          Manual selection
+          <div class="form-row" style="padding-left: 1.5em;">
+            {% for job in jobs %}
+            <div class="form-check" style="min-width: 5em;">
+              <input class="form-check-input" type="checkbox" name="filterjob" id="filterjob_{{ job.name }}" value="{{ job.name }}" />
+              <label class="form-check-label" for="filterjob_{{ job.name }}">{{ job.name }}</label>
+            </div>
+            {% if forloop.counter|divisibleby:"11" %}
+            </div>
+            <div class="form-row" style="padding-left: 1.5em;">
+            {%endif%}
+            {% endfor %}
+          </div>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-sm btn-primary" type="button" id="clear-filter-button">Clear all</button>
+        </div>
       </form>
+      </div>
+      <br />
+      <div class="card">
+        <div class="card-header">Result summary</div>
+        <div class="card-body">
+          <dl>
+            <dt>Primary jobs</dt>
+            <dd id="primary-jobs-output" style="min-height: 1.5em;"></dd>
+            <dt>Secondary jobs</dt>
+            <dd id="secondary-jobs-output" style="min-height: 1.5em;"></dd>
+          </dl>
+        </div>
       </div>
     </div>
     <table class="table">
@@ -58,63 +80,5 @@
 </div>
 {% endblock %}
 {% block extra_scripts %}
-<script type="text/javascript"><!--
-(function($) {
-  $('#jobsfilterform input').on("change", function() {
-    var jobsSelected = false,
-        activeJobs = {},
-        primaryJobs = [],
-        seenPrimary = {},
-        secondaryJobs = [],
-        seenSecondary = {};
-    $.each($('#jobsfilterform input:checked'), function() {
-      jobsSelected = true;
-      activeJobs[$(this).val()] = true;
-    });
-    if(jobsSelected) {
-      $.each($('#jobstablebody th'), function() {
-        var $this = $(this),
-            $parent = $this.parent(),
-            job = $this.text();
-        if(activeJobs[job]) {
-          $parent.show();
-          $.each(
-            $parent.find("td.primaryjobs").first().text().split(/,\s*/),
-            function() {
-              if(this.length && !seenPrimary[this]) {
-                primaryJobs.push(this)
-                seenPrimary[this] = true;
-              }
-            }
-          )
-          $.each(
-            $parent.find("td.secondaryjobs").first().text().split(/,\s*/),
-            function() {
-              if(this.length  && !seenSecondary[this]) {
-                secondaryJobs.push(this)
-                seenSecondary[this] = true;
-              }
-            }
-          )
-        } else {
-          $parent.hide();
-        }
-      });
-    } else {
-      $('#jobstablebody tr').show();
-    }
-    primaryJobs.sort()
-    secondaryJobs.sort()
-    $('#primary-jobs-output').text(primaryJobs.join(", "));
-    $('#secondary-jobs-output').text(secondaryJobs.join(", "));
-  });
-  $('#clear-filter-button').on('click', function() {
-    $('#jobsfilterform input').each(function() {
-      $(this).removeAttr("checked");
-    });
-    $('#jobsfilterform input').last().trigger("change");
-    return false;
-  })
-})(jQuery);
-//--></script>
+<script type="text/javascript" src="{% static 'mgmembers/javascript/gear_overview_general.js' %}"></script>
 {% endblock %}
