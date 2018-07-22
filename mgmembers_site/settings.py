@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'photologue',
     'sortedm2m',
     'bootstrapform',
+    'snowpenguin.django.recaptcha2',
     'mgmembers',
 ]
 
@@ -146,6 +147,9 @@ MESSAGE_TAGS = {
 }
 
 DISCORD_LINK = None
+
+RECAPTCHA_PRIVATE_KEY = ''
+RECAPTCHA_PUBLIC_KEY = ''
 
 LOCAL_SETTINGS_FILE = os.path.join(SITE_DIR, "local_settings.py")
 if os.path.exists(LOCAL_SETTINGS_FILE):

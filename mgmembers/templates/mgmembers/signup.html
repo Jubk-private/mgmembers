@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 {% load bootstrap %}
+{% load recaptcha2 %}
+
+{% block extra_head %}
+{% recaptcha_init %}
+{% endblock %}
 
 {% block content %}
   <div class="row text-left">

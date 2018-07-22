@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from snowpenguin.django.recaptcha2.fields import ReCaptchaField
+from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
 
 
 class SignUpForm(UserCreationForm):
@@ -12,6 +14,7 @@ class SignUpForm(UserCreationForm):
             'email',
             'password1',
             'password2',
+            'recaptcha2',
         )
 
     first_name = forms.CharField(
@@ -23,4 +26,9 @@ class SignUpForm(UserCreationForm):
     email = forms.EmailField(
         max_length=254, required=False,
         help_text='Optional'
+    )
+
+    recaptcha2 = ReCaptchaField(
+        label='Spam check',
+        widget=ReCaptchaWidget(),
     )
