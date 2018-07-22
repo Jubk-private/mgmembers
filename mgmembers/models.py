@@ -406,6 +406,25 @@ class DynamisGearChoices(models.Model):
         default=None
     )
 
+    NO_RUNS_REMAINING = 0
+    ONE_RUNS_REMAINING = 1
+    TWO_RUNS_REMAINING = 2
+    THREE_RUNS_REMAINING = 3
+    FOUR_RUNS_REMAINING = 4
+
+    probation_choices = (
+        (NO_RUNS_REMAINING, "No runs remaining"),
+        (ONE_RUNS_REMAINING, "One run remaining"),
+        (TWO_RUNS_REMAINING, "Two runs remaining"),
+        (THREE_RUNS_REMAINING, "Three runs remaining"),
+        (FOUR_RUNS_REMAINING, "Four runs remaining"),
+    )
+
+    remaining_probation = models.IntegerField(
+        choices=probation_choices,
+        default=NO_RUNS_REMAINING
+    )
+
     sandoria_primary = models.ForeignKey(
         Job,
         verbose_name="San d'Oria #1",

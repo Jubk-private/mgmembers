@@ -536,13 +536,16 @@ class DynamisGearOverview(TemplateView):
             if not val:
                 continue
 
+            no_probabtion = mgmodels.DynamisGearChoices.NO_RUNS_REMAINING
+
             sdo_jobs.append({
                 'name': val,
                 'characters': mgmodels.Character.objects.filter(
                     Q(dynamisgearchoices__sandoria_primary__name=val) |
                     Q(dynamisgearchoices__sandoria_secondary__name=val)
                 ).filter(
-                    owner__is_active=True
+                    owner__is_active=True,
+                    dynamisgearchoices__remaining_probation=no_probabtion
                 )
             })
             bastok_jobs.append({
@@ -551,7 +554,8 @@ class DynamisGearOverview(TemplateView):
                     Q(dynamisgearchoices__bastok_primary__name=val) |
                     Q(dynamisgearchoices__bastok_secondary__name=val)
                 ).filter(
-                    owner__is_active=True
+                    owner__is_active=True,
+                    dynamisgearchoices__remaining_probation=no_probabtion
                 )
             })
             windurst_jobs.append({
@@ -560,7 +564,8 @@ class DynamisGearOverview(TemplateView):
                     Q(dynamisgearchoices__windurst_primary__name=val) |
                     Q(dynamisgearchoices__windurst_secondary__name=val)
                 ).filter(
-                    owner__is_active=True
+                    owner__is_active=True,
+                    dynamisgearchoices__remaining_probation=no_probabtion
                 )
             })
             jeuno_jobs.append({
@@ -569,7 +574,8 @@ class DynamisGearOverview(TemplateView):
                     Q(dynamisgearchoices__jeuno_primary__name=val) |
                     Q(dynamisgearchoices__jeuno_secondary__name=val)
                 ).filter(
-                    owner__is_active=True
+                    owner__is_active=True,
+                    dynamisgearchoices__remaining_probation=no_probabtion
                 )
             })
             body_jobs.append({
@@ -578,7 +584,8 @@ class DynamisGearOverview(TemplateView):
                     Q(dynamisgearchoices__body_primary__name=val) |
                     Q(dynamisgearchoices__body_secondary__name=val)
                 ).filter(
-                    owner__is_active=True
+                    owner__is_active=True,
+                    dynamisgearchoices__remaining_probation=no_probabtion
                 )
             })
 
