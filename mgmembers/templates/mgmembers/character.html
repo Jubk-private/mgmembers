@@ -201,7 +201,7 @@
           {% if can_edit %}
           <div class="btn-toolbar float-right">
             <div class="btn-group">
-              {% if character.dynamisgearchoices.can_be_edited %}
+              {% if not character.dynamisgearchoices or character.dynamisgearchoices.can_be_edited %}
               <a href="{% url 'character-dynamis-gear' character.name %}" role="button" class="btn btn-primary">
                 Edit Dynamis gear
                 {% if character.dynamisgearchoices.recently_edited %}
