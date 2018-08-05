@@ -466,7 +466,7 @@ class DynamisGearView(UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         obj = self.get_object()
-        if obj.pk is not None and not self.obj.can_be_edited:
+        if obj.pk is not None and not obj.can_be_edited:
             return HttpResponseRedirect(self.get_success_url())
 
         return super(DynamisGearView, self).dispatch(request, *args, **kwargs)
