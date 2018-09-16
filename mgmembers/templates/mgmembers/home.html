@@ -30,6 +30,9 @@
     <p>
         <a href="{% url 'character-create' %}" role="button" class="btn btn-primary">Create new character</a>
     </p>
+    <p>
+        <a href="{% url 'rema-augment-choice' %}" role="button" class="btn btn-primary">Set REMA Augment choice</a>
+    </p>
     {% if request.user.is_superuser %}
     <h1>Superuser tools</h1>
     <ul>

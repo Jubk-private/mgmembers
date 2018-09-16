@@ -584,3 +584,27 @@ class DynamisGearChoices(models.Model):
 
     def __str__(self):
         return "DynamisGearChoices for %s" % self.character
+
+class RemaAugmentChoice(models.Model):
+    RELIC = 1
+    MYTHIC = 2
+    EMPYREAN = 3
+    AEONIC = 4
+    ERGON = 5
+    choices = (
+        (None, '- None -'),
+        (RELIC, 'Relic / Ancient'),
+        (MYTHIC, 'Mythic / Balrahn'),
+        (EMPYREAN, 'Empyrean / Secret Moogle'),
+        (AEONIC, 'Aeonic / Familair'),
+        (ERGON, 'Ergon / Mysterious')
+    )
+    player = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE
+    )
+    rema_choice=models.IntegerField(
+        choices=choices,
+        null=True,
+        default=None
+    )

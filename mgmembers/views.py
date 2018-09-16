@@ -344,7 +344,8 @@ class OmenBossWishlistView(UpdateView):
     def get_object(self):
         try:
             self.character = mgmodels.Character.objects.get(
-                name=self.kwargs.get("name")
+                name=self.kwargs.get("name"),
+                owner=self.request.user
             )
         except mgmodels.Character.DoesNotExist:
             raise Http404("Character not found")
@@ -366,7 +367,8 @@ class OmenBossesClearsView(UpdateView):
     def get_object(self):
         try:
             self.character = mgmodels.Character.objects.get(
-                name=self.kwargs.get("name")
+                name=self.kwargs.get("name"),
+                owner=self.request.user
             )
         except mgmodels.Character.DoesNotExist:
             raise Http404("Character not found")
@@ -400,7 +402,8 @@ class WarderOfCouragePopsView(UpdateView):
     def get_object(self):
         try:
             self.character = mgmodels.Character.objects.get(
-                name=self.kwargs.get("name")
+                name=self.kwargs.get("name"),
+                owner=self.request.user
             )
         except mgmodels.Character.DoesNotExist:
             raise Http404("Character not found")
@@ -474,7 +477,8 @@ class DynamisGearView(UpdateView):
     def get_object(self):
         try:
             self.character = mgmodels.Character.objects.get(
-                name=self.kwargs.get("name")
+                name=self.kwargs.get("name"),
+                owner=self.request.user
             )
         except mgmodels.Character.DoesNotExist:
             raise Http404("Character not found")
@@ -594,3 +598,49 @@ class DynamisGearOverview(TemplateView):
 
 class LSInformationView(TemplateView):
     template_name = 'mgmembers/ls_information.html'
+
+
+class RemaAugmentChoiceView(UpdateView):
+    model = mgmodels.RemaAugmentChoice
+    template_name = 'mgmembers/rema_augment_choice.html'
+    fields = ('rema_choice',)
+
+    def get_object(self):
+        user = self.request.user
+        if not user:
+            raise Http404("User not found")
+
+        if hasattr(user, 'remaaugmentchoice'):
+            return user.remaaugmentchoice
+        else:
+            return self.model(player=user)
+
+    def get_success_url(self):
+        return reverse('home')
+
+
+class RemaOverview(TemplateView):
+    template_name = 'mgmembers/gear_rema_overview.html'
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+
+        choices = []
+
+        for x in mgmodels.RemaAugmentChoice.choices:
+            if x[0] is None:
+                continue
+            qs = User.objects.filter(
+                remaaugmentchoice__rema_choice=x[0]
+            )
+            choices.append({
+                'name': x[1],
+                'players': qs,
+                'count': qs.count()
+            })
+
+
+        result['choices'] = choices
+
+        return result
+

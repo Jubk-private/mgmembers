@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row text-left">
+  <div class="col-md-12">
+    <h1>REMA Augment overview</h1>
+    {% if request.user.is_authenticated %}
+    <p>
+        <a href="{% url 'rema-augment-choice' %}">Click here to edit your REMA preference</a>
+    </p>
+    {% endif %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Choice</th>
+          <th scope="col">Players</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for choice in choices %}
+        <tr>
+          <td>{{ choice.name }} ({{ choice.count }})</td>
+          <td>{{ choice.players|join:", " }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
