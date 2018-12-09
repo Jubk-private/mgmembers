@@ -11,6 +11,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.shortcuts import reverse
 from django.http import Http404
+from django.http import JsonResponse
 from django.utils import timezone
 from django.views.generic import CreateView
 from django.views.generic import DeleteView
@@ -18,6 +19,7 @@ from django.views.generic import DetailView
 from django.views.generic import FormView
 from django.views.generic import TemplateView
 from django.views.generic import UpdateView
+from django.views.generic import View
 
 import datetime
 import mgmembers.forms as mgforms
@@ -644,3 +646,43 @@ class RemaOverview(TemplateView):
 
         return result
 
+
+class LootJsonView(View):
+
+    def get(self, request, *args, **kwargs):
+        qs = mgmodels.DynamisGearChoices.objects.filter(
+            character__owner__is_active=True
+        ).order_by("character__name")
+
+        loot = {}
+
+        def add_lotter(item, name):
+            if item not in loot:
+                loot[item] = {}
+
+            loot[item][name] = True
+
+        for dgs in qs:
+            name = dgs.character.name
+
+            for x in dgs.sandoria_jobs:
+                add_lotter("Footshard: " + x, name)
+                add_lotter("Voidfoot: " + x, name)
+
+            for x in dgs.bastok_jobs:
+                add_lotter("Handshard: " + x, name)
+                add_lotter("Voidhand: " + x, name)
+
+            for x in dgs.windurst_jobs:
+                add_lotter("Headshard: " + x, name)
+                add_lotter("Voidhead: " + x, name)
+
+            for x in dgs.jeuno_jobs:
+                add_lotter("Legshard: " + x, name)
+                add_lotter("Voidleg: " + x, name)
+
+            for x in dgs.body_jobs:
+                add_lotter("Torsoshard: " + x, name)
+                add_lotter("Voidtorso: " + x, name)
+
+        return JsonResponse(loot)
