@@ -649,12 +649,96 @@ class RemaOverview(TemplateView):
 
 class LootJsonView(View):
 
-    def get(self, request, *args, **kwargs):
-        qs = mgmodels.DynamisGearChoices.objects.filter(
-            character__owner__is_active=True
-        ).order_by("character__name")
+    general_loot = {
+        "Niqmaddu Ring": ["WAR", "MNK", "DRK", "SAM", "DRG", "PUP", "RUN"],
+        "Shulmanu collar": ["BST", "DRG", "SMN", "PUP"],
+        "Nisroch jerkin": ["RNG", "COR"],
+        "Enmerkar earring": ["BST", "DRG"],
+        "Iskur gorget": ["THF", "RNG", "NIN", "COR"],
+        "Udug jacket": ["BST", "SMN", "PUP"],
+        "Ammurapi shield": ["WHM", "BLM", "RDM", "BRD", "SMN", "SCH", "GEO"],
+        "Lugalbanda earring": ["BLM", "SMN", "SCH", "GEO"],
+        "Shamash robe": ["WHM", "BLM", "RDM", "BLU", "SCH", "GEO"],
+        "Yamarang": ["THF", "NIN", "DNC", "RUN"],
+        "Dingir ring": ["THF", "RNG", "NIN", "COR"],
+        "Ashera harness": ["MNK", "THF", "BRD", "NIN", "DNC", "RUN"],
+        "Utu grip": ["WAR", "DRK", "SAM", "DRG", "RUN"],
+        "Ilabrat ring": [
+            "MNK", "WHM", "RDM", "THF", "BST", "BRD", "RNG", "SAM", "NIN",
+            "BLU", "COR", "DNC", "RUN"
+        ],
+        "Dagon breastplate": ["WAR", "PLD", "DRK", "SAM", "DRG"],
+        "Regal belt": ["SMN"],
+        "Regal captain's gloves": ["WAR", "MNK", "DRK", "SAM", "PUP"],
+        "Regal cuffs": ["WHM", "BLM", "RDM", "SMN", "BLU", "SCH", "GEO"],
+        "Regal earring": ["WHM", "BLM", "RDM", "BRD", "BLU", "SCH", "GEO"],
+        "Regal gauntlets": ["PLD", "RUN"],
+        "Regal gem": ["RDM"],
+        "Regal gloves": [
+            "THF", "BST", "BRD", "RNG", "NIN", "DRG", "COR", "DNC"
+        ],
+        "Regal necklace": ["COR"],
+        "Regal ring": [
+            "WAR", "MNK", "THF", "PLD", "DRK", "BST", "RNG", "SAM", "NIN",
+            "DRG", "COR", "PUP", "DNC", "RUN"
+        ],
+        "Nusku shield": ["RNG", "COR"],
+        "Sherida earring": [
+            "MNK", "RDM", "THF", "BST", "RNG", "DRG", "DNC", "RUN"
+        ],
+        "Anu torque": ["MNK", "RDM", "THF", "BST", "RNG", "DRG", "DNC", "RUN"],
+        "Kishar ring": [
+            "WHM", "BLM", "RDM", "PLD", "DRK", "BRD", "NIN", "SMN", "BLU",
+            "COR", "SCH", "GEO", "RUN"
+        ],
+        "Enki strap": ["WHM", "BLM", "RDM", "BRD", "SMN", "SCH", "GEO"],
+        "Erra pendant": [
+            "WHM", "BLM", "RDM", "PLD", "DRK", "SMN", "BLU", "SCH", "GEO",
+            "RUN"
+        ],
+        "Adad amulet": ["BST", "DRG", "SMN", "PUP"],
+        "Knobkierrie": ["WAR", "MNK", "DRK", "SAM", "DRG", "RUN"],
+        "Adapa shield": ["WAR", "DRK", "BST"],
+    }
 
+    general_items_by_job = {}
+
+    for item,jobs in general_loot.items():
+        for job in jobs:
+            if job not in general_items_by_job:
+                general_items_by_job[job] = set()
+            general_items_by_job[job].add(item)
+
+    scale_map = {
+        mgmodels.OmenBossWishlist.KIN: "Kin's Scale",
+        mgmodels.OmenBossWishlist.GIN: "Gin's Scale",
+        mgmodels.OmenBossWishlist.KEI: "Kei's Scale",
+        mgmodels.OmenBossWishlist.KYOU: "Kyou's Scale",
+        mgmodels.OmenBossWishlist.FU: "Fu's Scale",
+    }
+
+
+    def get(self, request, *args, **kwargs):
         loot = {}
+
+        for item in self.general_loot.keys():
+            loot[item] = {}
+
+        # Add empty entries for all jobs
+        for job in mgmodels.Job.objects.all():
+            loot["Footshard: " + job.name] = {}
+            loot["Voidfoot: " + job.name] = {}
+            loot["Handshard: " + job.name] = {}
+            loot["Voidhand: " + job.name] = {}
+            loot["Headshard: " + job.name] = {}
+            loot["Voidhead: " + job.name] = {}
+            loot["Legshard: " + job.name] = {}
+            loot["Voidleg: " + job.name] = {}
+            loot["Torsoshard: " + job.name] = {}
+            loot["Voidtorso: " + job.name] = {}
+
+        for item in self.scale_map.values():
+            loot[item] = {}
 
         def add_lotter(item, name):
             if item not in loot:
@@ -662,8 +746,21 @@ class LootJsonView(View):
 
             loot[item][name] = True
 
-        for dgs in qs:
-            name = dgs.character.name
+        qs = mgmodels.Character.objects.filter(
+            owner__is_active=True
+        ).prefetch_related(
+            "jobs", "dynamisgearchoices", "omenbosswishlist"
+        )
+
+        for character in qs:
+            name = character.name
+
+            for job in character.primary_gear_jobs:
+                for item in self.general_items_by_job[job.name]:
+                    add_lotter(item, name)
+
+
+            dgs = character.dynamisgearchoices
 
             for x in dgs.sandoria_jobs:
                 add_lotter("Footshard: " + x, name)
@@ -685,4 +782,18 @@ class LootJsonView(View):
                 add_lotter("Torsoshard: " + x, name)
                 add_lotter("Voidtorso: " + x, name)
 
-        return JsonResponse(loot)
+
+            osc = character.omenbosswishlist
+
+            osc_first = self.scale_map.get(osc.first_choice)
+            if osc_first:
+                add_lotter(osc_first, name)
+
+            osc_second = self.scale_map.get(osc.second_choice)
+            if osc_second:
+                add_lotter(osc_second, name)
+
+        return JsonResponse(
+            loot,
+            json_dumps_params={"indent": "  ", "sort_keys": True}
+        )
