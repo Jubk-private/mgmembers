@@ -760,38 +760,40 @@ class LootJsonView(View):
                     add_lotter(item, name)
 
 
-            dgs = character.dynamisgearchoices
+            dgs = getattr(character, "dynamisgearchoices")
 
-            for x in dgs.sandoria_jobs:
-                add_lotter("Footshard: " + x, name)
-                add_lotter("Voidfoot: " + x, name)
+            if dgs:
+                for x in dgs.sandoria_jobs:
+                    add_lotter("Footshard: " + x, name)
+                    add_lotter("Voidfoot: " + x, name)
 
-            for x in dgs.bastok_jobs:
-                add_lotter("Handshard: " + x, name)
-                add_lotter("Voidhand: " + x, name)
+                for x in dgs.bastok_jobs:
+                    add_lotter("Handshard: " + x, name)
+                    add_lotter("Voidhand: " + x, name)
 
-            for x in dgs.windurst_jobs:
-                add_lotter("Headshard: " + x, name)
-                add_lotter("Voidhead: " + x, name)
+                for x in dgs.windurst_jobs:
+                    add_lotter("Headshard: " + x, name)
+                    add_lotter("Voidhead: " + x, name)
 
-            for x in dgs.jeuno_jobs:
-                add_lotter("Legshard: " + x, name)
-                add_lotter("Voidleg: " + x, name)
+                for x in dgs.jeuno_jobs:
+                    add_lotter("Legshard: " + x, name)
+                    add_lotter("Voidleg: " + x, name)
 
-            for x in dgs.body_jobs:
-                add_lotter("Torsoshard: " + x, name)
-                add_lotter("Voidtorso: " + x, name)
+                for x in dgs.body_jobs:
+                    add_lotter("Torsoshard: " + x, name)
+                    add_lotter("Voidtorso: " + x, name)
 
 
-            osc = character.omenbosswishlist
+            osc = getattr(character, "omenbosswishlist")
 
-            osc_first = self.scale_map.get(osc.first_choice)
-            if osc_first:
-                add_lotter(osc_first, name)
+            if osc:
+                osc_first = self.scale_map.get(osc.first_choice)
+                if osc_first:
+                    add_lotter(osc_first, name)
 
-            osc_second = self.scale_map.get(osc.second_choice)
-            if osc_second:
-                add_lotter(osc_second, name)
+                osc_second = self.scale_map.get(osc.second_choice)
+                if osc_second:
+                    add_lotter(osc_second, name)
 
         return JsonResponse(
             loot,
