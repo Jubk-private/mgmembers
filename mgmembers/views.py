@@ -762,7 +762,9 @@ class LootJsonView(View):
 
             dgs = getattr(character, "dynamisgearchoices")
 
-            if dgs:
+            if hasattr(character, "dynamisgearchoices"):
+                dgs = character.dynamisgearchoices
+
                 for x in dgs.sandoria_jobs:
                     add_lotter("Footshard: " + x, name)
                     add_lotter("Voidfoot: " + x, name)
@@ -784,9 +786,10 @@ class LootJsonView(View):
                     add_lotter("Voidtorso: " + x, name)
 
 
-            osc = getattr(character, "omenbosswishlist")
 
-            if osc:
+
+            if hasattr(character, "omenbosswishlist"):
+                osc = character.omenbosswishlist
                 osc_first = self.scale_map.get(osc.first_choice)
                 if osc_first:
                     add_lotter(osc_first, name)
