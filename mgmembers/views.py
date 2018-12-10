@@ -759,9 +759,6 @@ class LootJsonView(View):
                 for item in self.general_items_by_job[job.name]:
                     add_lotter(item, name)
 
-
-            dgs = getattr(character, "dynamisgearchoices")
-
             if hasattr(character, "dynamisgearchoices"):
                 dgs = character.dynamisgearchoices
 
