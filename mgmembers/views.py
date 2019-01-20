@@ -13,6 +13,8 @@ from django.shortcuts import reverse
 from django.http import Http404
 from django.http import JsonResponse
 from django.utils import timezone
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView
 from django.views.generic import DeleteView
 from django.views.generic import DetailView
@@ -22,6 +24,7 @@ from django.views.generic import UpdateView
 from django.views.generic import View
 
 import datetime
+import json
 import mgmembers.forms as mgforms
 import mgmembers.models as mgmodels
 import pytz
@@ -646,7 +649,7 @@ class RemaOverview(TemplateView):
 
         return result
 
-
+@method_decorator(csrf_exempt, name='dispatch')
 class LootJsonView(View):
 
     general_loot = {
@@ -783,8 +786,6 @@ class LootJsonView(View):
                     add_lotter("Voidtorso: " + x, name)
 
 
-
-
             if hasattr(character, "omenbosswishlist"):
                 osc = character.omenbosswishlist
                 osc_first = self.scale_map.get(osc.first_choice)
@@ -799,6 +800,27 @@ class LootJsonView(View):
             loot,
             json_dumps_params={"indent": "  ", "sort_keys": True}
         )
+
+    def post(self, request, *args, **kwargs):
+        alliance_json_str = request.POST.get("alliance_json")
+
+        if alliance_json_str:
+            data = json.loads(alliance_json_str)
+            if "zone" in data and "members" in data:
+                reg = mgmodels.RegisteredAlliance(
+                    zone=data["zone"],
+                    registered_by=data.get("uploaded_by"),
+                )
+                reg.save()
+                members = data.get("members", [])
+                for x in members:
+                    try:
+                        char = mgmodels.Character.objects.get(name=x)
+                    except mgmodels.Character.DoesNotExist:
+                        pass
+                    reg.characters.add(char)
+
+        return self.get(request, *args, **kwargs)
 
 
 class PartyBuilder(TemplateView):

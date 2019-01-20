@@ -653,3 +653,25 @@ class RemaAugmentChoice(models.Model):
         null=True,
         default=None
     )
+
+class RegisteredAlliance(models.Model):
+    register_time = models.DateTimeField(default=timezone.now)
+    registered_by = models.CharField(
+        max_length=20,
+        null=True,
+        blank=True,
+    )
+    zone = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+    )
+    characters = models.ManyToManyField(Character)
+
+    def __str__(self):
+        return '%s, %s in %s: %d members' % (
+            self.registered_by,
+            self.register_time.strftime("%Y-%m-%d %H:%M:%S"),
+            self.zone,
+            self.characters.count()
+        )
