@@ -6,6 +6,12 @@
         destinations[$this.attr("data-role")] = $this;
     });
 
+    function update_count() {
+        $('#partybuilder .party-count').text(
+            "Count: " + $('#partybuilder span.selected-char').length
+        );
+    }
+
     $('#partybuilder span.event-job').on("click", function() {
         var $this = $(this),
             $dest = destinations[$this.attr("data-role")],
@@ -31,7 +37,9 @@
         $new_elem.on("click", function() {
             $(this).remove();
             pickers.show();
+            update_count();
         });
         $dest.append($new_elem);
+        update_count();
     });
 })(jQuery);
