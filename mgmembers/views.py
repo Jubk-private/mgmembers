@@ -799,3 +799,51 @@ class LootJsonView(View):
             loot,
             json_dumps_params={"indent": "  ", "sort_keys": True}
         )
+
+
+class PartyBuilder(TemplateView):
+    template_name = 'mgmembers/party_builder.html'
+
+    def get_joblist(self, joblist):
+        jobs = []
+        for job in joblist:
+            event_chars = job.characterjobs.filter(
+                event_status=mgmodels.CharacterJob.EVENT_PRIMARY
+            )
+            if(event_chars.exists()):
+                jobs.append({
+                    "name": job.name,
+                    "characters": event_chars
+                })
+        return jobs
+
+    def get_context_data(self, **kwargs):
+        roles = []
+
+        roles.append({
+            "role": "Healing",
+            "jobs": self.get_joblist(mgmodels.Job.healing_jobs())
+        })
+        roles.append({
+            "role": "Tanking",
+            "jobs": self.get_joblist(mgmodels.Job.tank_jobs())
+        })
+        roles.append({
+            "role": "Support",
+            "jobs": self.get_joblist(mgmodels.Job.support_jobs())
+        })
+        roles.append({
+            "role": "Ranged",
+            "jobs": self.get_joblist(mgmodels.Job.ranged_jobs())
+        })
+        roles.append({
+            "role": "DD",
+            "jobs": self.get_joblist(mgmodels.Job.dd_jobs())
+        })
+
+        for x in roles:
+            x["count"] = len(x["jobs"])
+
+        kwargs['roles'] = roles
+
+        return super().get_context_data(**kwargs)

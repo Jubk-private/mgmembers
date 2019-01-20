@@ -242,6 +242,17 @@ class Job(models.Model):
 
     FULL_NAMES = {x[0]: x[1] for x in job_choices}
 
+    healing_job_names = (WHM, SCH, RDM, PUP)
+    tank_job_names = (RUN, PLD, NIN, PUP, WAR)
+    support_job_names = (GEO, COR, BRD, RDM, SMN, BLU)
+    nuke_job_names = (BLM, SCH, GEO, SMN, PUP)
+    dd_job_names = (
+        WAR, MNK, THF, DRK, BST, RNG, SAM, NIN, DRG, SMN, BLU, COR, PUP,
+        DNC, RUN
+    )
+    ranged_job_names = (RNG, COR, PUP, SMN, SAM)
+
+
     name = models.CharField(
         max_length=3,
         unique=True,
@@ -249,6 +260,30 @@ class Job(models.Model):
         blank=False,
         choices=job_choices,
     )
+
+    @classmethod
+    def healing_jobs(cls):
+        return cls.objects.filter(name__in=cls.healing_job_names)
+
+    @classmethod
+    def tank_jobs(cls):
+        return cls.objects.filter(name__in=cls.tank_job_names)
+
+    @classmethod
+    def support_jobs(cls):
+        return cls.objects.filter(name__in=cls.support_job_names)
+
+    @classmethod
+    def nuke_jobs(cls):
+        return cls.objects.filter(name__in=cls.nuke_job_names)
+
+    @classmethod
+    def ranged_jobs(cls):
+        return cls.objects.filter(name__in=cls.ranged_job_names)
+
+    @classmethod
+    def dd_jobs(cls):
+        return cls.objects.filter(name__in=cls.dd_job_names)
 
     @classmethod
     def create_defaults(cls):

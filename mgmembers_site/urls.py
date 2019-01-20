@@ -95,6 +95,9 @@ urlpatterns = [
         mgviews.TemplateView.as_view(template_name='mgmembers/dynamis_maps.html'),
         name='dynamis_maps'),
     url(r'^galleries/', include('photologue.urls', namespace='galleries')),
+    url(r'^party_builder/',
+        mgviews.PartyBuilder.as_view(),
+        name="party-builder"),
 ]
 
 # Serve media through development server
