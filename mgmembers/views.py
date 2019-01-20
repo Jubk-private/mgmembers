@@ -834,6 +834,10 @@ class PartyBuilder(TemplateView):
             "jobs": self.get_joblist(mgmodels.Job.support_jobs())
         })
         roles.append({
+            "role": "Nuking",
+            "jobs": self.get_joblist(mgmodels.Job.nuke_jobs())
+        })
+        roles.append({
             "role": "Ranged",
             "jobs": self.get_joblist(mgmodels.Job.ranged_jobs())
         })
