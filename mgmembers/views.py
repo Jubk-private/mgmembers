@@ -808,7 +808,8 @@ class PartyBuilder(TemplateView):
         jobs = []
         for job in joblist:
             event_chars = job.characterjobs.filter(
-                event_status=mgmodels.CharacterJob.EVENT_PRIMARY
+                event_status=mgmodels.CharacterJob.EVENT_PRIMARY,
+                character__owner__is_active=True
             )
             if(event_chars.exists()):
                 jobs.append({
