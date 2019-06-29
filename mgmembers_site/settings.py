@@ -151,8 +151,8 @@ DISCORD_LINK = None
 RECAPTCHA_PRIVATE_KEY = ''
 RECAPTCHA_PUBLIC_KEY = ''
 
-FFXI_RES_FILES_DIR = r'c:\program files (x86)\windower\res'
-FFXI_ADDON_LIBS_DIR = r'c:\program files (x86)\windower\addons\libs'
+FFXI_RES_FILES_DIR = r'c:\program files (x86)\windower4\res'
+FFXI_ADDON_LIBS_DIR = r'c:\program files (x86)\windower4\addons\libs'
 
 LOCAL_SETTINGS_FILE = os.path.join(SITE_DIR, "local_settings.py")
 if os.path.exists(LOCAL_SETTINGS_FILE):

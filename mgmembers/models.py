@@ -1,8 +1,10 @@
 from django.db import models
+from django.db import transaction
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator
 from django.utils import timezone
-
+import os
 import uuid
 import datetime
 import lupa
@@ -20,7 +22,7 @@ def read_lua_data_from_file(f, start_marker="return"):
                 luacode += "}"
                 break
             else:
-            luacode += line
+                luacode += line
         else:
             if line.startswith(start_marker):
                 luacode = "{"
@@ -313,52 +315,52 @@ class Job(models.Model):
     @classmethod
     def bitmask_to_qs(cls, bitmask):
         names = set()
-        if bitmask & 1 << 0:
-            names.add(Job.WAR)
         if bitmask & 1 << 1:
-            names.add(Job.MNK)
+            names.add(Job.WAR)
         if bitmask & 1 << 2:
-            names.add(Job.WHM)
+            names.add(Job.MNK)
         if bitmask & 1 << 3:
-            names.add(Job.BLM)
+            names.add(Job.WHM)
         if bitmask & 1 << 4:
-            names.add(Job.RDM)
+            names.add(Job.BLM)
         if bitmask & 1 << 5:
-            names.add(Job.THF)
+            names.add(Job.RDM)
         if bitmask & 1 << 6:
-            names.add(Job.PLD)
+            names.add(Job.THF)
         if bitmask & 1 << 7:
-            names.add(Job.DRK)
+            names.add(Job.PLD)
         if bitmask & 1 << 8:
-            names.add(Job.BST)
+            names.add(Job.DRK)
         if bitmask & 1 << 9:
-            names.add(Job.BRD)
+            names.add(Job.BST)
         if bitmask & 1 << 10:
-            names.add(Job.RNG)
+            names.add(Job.BRD)
         if bitmask & 1 << 11:
-            names.add(Job.SAM)
+            names.add(Job.RNG)
         if bitmask & 1 << 12:
-            names.add(Job.NIN)
+            names.add(Job.SAM)
         if bitmask & 1 << 13:
-            names.add(Job.DRG)
+            names.add(Job.NIN)
         if bitmask & 1 << 14:
-            names.add(Job.SMN)
+            names.add(Job.DRG)
         if bitmask & 1 << 15:
-            names.add(Job.BLU)
+            names.add(Job.SMN)
         if bitmask & 1 << 16:
-            names.add(Job.COR)
+            names.add(Job.BLU)
         if bitmask & 1 << 17:
-            names.add(Job.PUP)
+            names.add(Job.COR)
         if bitmask & 1 << 18:
-            names.add(Job.DNC)
+            names.add(Job.PUP)
         if bitmask & 1 << 19:
-            names.add(Job.SCH)
+            names.add(Job.DNC)
         if bitmask & 1 << 20:
-            names.add(Job.GEO)
+            names.add(Job.SCH)
         if bitmask & 1 << 21:
+            names.add(Job.GEO)
+        if bitmask & 1 << 22:
             names.add(Job.RUN)
 
-        return cls.filter(name__in=names)
+        return cls.objects.filter(name__in=names)
         
 
     @property
@@ -792,6 +794,14 @@ class Race(models.Model):
                 obj = cls(**data)
                 obj.save()
 
+    @classmethod
+    def bitmask_to_qs(cls, bitmask):
+        ids = []
+        for data in cls.defaults:
+            if bitmask & (1 << data["id"]):
+                ids.append(data["id"])
+
+        return cls.objects.filter(pk__in=ids)
 
 class ItemCategory(models.Model):
     name = models.CharField(max_length=60)
@@ -1098,6 +1108,19 @@ class Skill(models.Model):
 
             obj.save()
 
+    @classmethod
+    def get_or_create(cls, id):
+        try:
+            obj = cls.objects.get(id=id)
+        except cls.DoesNotExist:
+            obj = cls(
+                id=id,
+                name="Unknown skill with id %s" % (id,),
+                category=None,
+            )
+            obj.save()
+
+
 
 class Item(models.Model):
 
@@ -1112,18 +1135,19 @@ class Item(models.Model):
             (STACK_SINGLE, STACK_SINGLE),
             (STACK_SMALL, STACK_SMALL),
             (STACK_LARGE, STACK_LARGE),
-        )
+        ),
+        null=True,
     )
-    cast_time = models.IntegerField()
-    level = models.IntegerField()
-    cast_delay = models.IntegerField()
-    max_charges = models.IntegerField()
-    recast_delay = models.IntegerField()
-    shield_size = models.IntegerField()
-    damage = models.IntegerField()
-    delay = models.IntegerField()
-    item_level = models.IntegerField()
-    superior_level = models.IntegerField()
+    cast_time = models.IntegerField(null=True)
+    level = models.IntegerField(null=True)
+    cast_delay = models.IntegerField(null=True)
+    max_charges = models.IntegerField(null=True)
+    recast_delay = models.IntegerField(null=True)
+    shield_size = models.IntegerField(null=True)
+    damage = models.IntegerField(null=True)
+    delay = models.IntegerField(null=True)
+    item_level = models.IntegerField(null=True)
+    superior_level = models.IntegerField(null=True)
 
     category = models.ForeignKey(
         ItemCategory,
@@ -1155,3 +1179,85 @@ class Item(models.Model):
         new_jobs = Job.get_jobs_from_bitmask(bitmask)
         self.jobs.exclude(pk__in=new_jobs).delete()
         self.jobs.add(new_jobs)
+
+    @classmethod
+    @transaction.atomic
+    def create_defaults(cls):
+        items_file = os.path.join(settings.FFXI_RES_FILES_DIR, "items.lua")
+        with open(items_file, encoding="utf8") as f:
+            lua_items = read_lua_data_from_file(f)
+
+
+            for lua_item in lua_items.values():
+                print("Importing item %s" % (lua_item["id"]))
+                try:
+                    item = cls.objects.get(id=lua_item["id"])
+                except cls.DoesNotExist:
+                    item = cls()
+                for attr, key in (
+                    ("id", "id"),
+                    ("name", "en"),
+                    ("name_ja", "ja"),
+                    ("stack", "stack"),
+                    ("cast_time", "cast_time"),
+                    ("level", "level"),
+                    ("cast_delay", "cast_delay"),
+                    ("max_charges","max_charges"),
+                    ("recast_delay", "recast_delay"),
+                    ("shield_size", "shield_size"),
+                    ("damage", "damage"),
+                    ("delay", "delay"), 
+                    ("item_level", "item_level"),
+                    ("superior_level", "superior_level"),
+                ):
+                    if key in lua_item:
+                        setattr(item, attr, lua_item[key])
+
+                if "category" in lua_item:
+                    value = lua_item["category"]
+                    item.category = ItemCategory.get_or_create(value)
+
+                if "type" in lua_item:
+                    value = lua_item["type"]
+                    item.type = ItemType.get_or_create(value)
+
+                if "skill" in lua_item:
+                    value = lua_item["skill"]
+                    item.skill = Skill.get_or_create(value)
+
+                item.save()
+
+                if "flags" in lua_item:
+                    value = int(lua_item["flags"])
+                    qs = ItemFlag.bitmask_to_qs(value)
+                    item.flags.clear()
+                    for x in qs:
+                        item.flags.add(x)
+
+                if "targets" in lua_item:
+                    value = int(lua_item["targets"])
+                    qs = Target.bitmask_to_qs(value)
+                    item.targets.clear()
+                    for x in qs:
+                        item.targets.add(x)
+
+                if "jobs" in lua_item:
+                    value = int(lua_item["jobs"])
+                    qs = Job.bitmask_to_qs(value)
+                    item.jobs.clear()
+                    for x in qs:
+                        item.jobs.add(x)
+
+                if "races" in lua_item:
+                    value = int(lua_item["races"])
+                    qs = Race.bitmask_to_qs(value)
+                    item.races.clear()
+                    for x in qs:
+                        item.races.add(x)
+
+                if "slots" in lua_item:
+                    value = int(lua_item["slots"])
+                    qs = ItemSlot.bitmask_to_qs(value)
+                    item.slots.clear()
+                    for x in qs:
+                        item.slots.add(x)
