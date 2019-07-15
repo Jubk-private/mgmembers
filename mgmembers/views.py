@@ -656,7 +656,7 @@ class LootJsonView(View):
         "Niqmaddu Ring": ["WAR", "MNK", "DRK", "SAM", "DRG", "PUP", "RUN"],
         "Shulmanu collar": ["BST", "DRG", "SMN", "PUP"],
         "Nisroch jerkin": ["RNG", "COR"],
-        "Enmerkar earring": ["BST", "DRG"],
+        "Enmerkar earring": ["BST", "DRG", "SMN", "PUP"],
         "Iskur gorget": ["THF", "RNG", "NIN", "COR"],
         "Udug jacket": ["BST", "SMN", "PUP"],
         "Ammurapi shield": ["WHM", "BLM", "RDM", "BRD", "SMN", "SCH", "GEO"],
