@@ -1261,3 +1261,231 @@ class Item(models.Model):
                     item.slots.clear()
                     for x in qs:
                         item.slots.add(x)
+
+
+class AeonicNM(models.Model):
+    name = models.CharField(max_length=60)
+    
+    AREA_ZITAH = 1 
+    AREA_RUAUN = 2 
+    AREA_REISENJIMA = 3 
+    
+    area_choices = (
+        (AREA_ZITAH, "Escha - Zi'Tah"),
+        (AREA_RUAUN, "Escha - Ru'Aun"),
+        (AREA_REISENJIMA, "Reisenjima"),
+    )
+        
+    area = models.IntegerField(
+        choices=area_choices,
+        default=AREA_ZITAH
+    )
+
+    TYPE_TIER_1 = 1
+    TYPE_TIER_2 = 2
+    TYPE_TIER_3 = 3
+    TYPE_ARK_ANGELS = 4
+    TYPE_HEAVENLY_BEASTS = 5
+    TYPE_NAZAR = 6
+    TYPE_HELM_1 = 7
+    TYPE_HELM_2 = 8
+
+    type_choices = (
+        (TYPE_TIER_1, "Tier 1"),
+        (TYPE_TIER_2, "Tier 2"),
+        (TYPE_TIER_3, "Tier 3"),
+        (TYPE_ARK_ANGELS, "Ark Angels"),
+        (TYPE_HEAVENLY_BEASTS, "Heavenly Beasts"),
+        (TYPE_NAZAR, "Nazar NM"),
+        (TYPE_HELM_1, "H.E.L.M. tier 1"),
+        (TYPE_HELM_2, "H.E.L.M. tier 2"),
+    )
+
+    type = models.IntegerField(
+        choices = type_choices,
+        default = TYPE_TIER_1
+    )
+
+    @classmethod
+    def create_defaults(cls):
+        for x in (
+            # Zitah tier 1
+            ("Aglaophotis", cls.AREA_ZITAH, cls.TYPE_TIER_1),
+            ("Angrboda", cls.AREA_ZITAH, cls.TYPE_TIER_1),
+            ("Cunnast", cls.AREA_ZITAH, cls.TYPE_TIER_1),
+            ("Ferrodon", cls.AREA_ZITAH, cls.TYPE_TIER_1),
+            ("Gestalt", cls.AREA_ZITAH, cls.TYPE_TIER_1),
+            ("Gulltop", cls.AREA_ZITAH, cls.TYPE_TIER_1),
+            ("Lustful Lydia", cls.AREA_ZITAH, cls.TYPE_TIER_1),
+            ("Revetaur", cls.AREA_ZITAH, cls.TYPE_TIER_1),
+            ("Tangata Manu", cls.AREA_ZITAH, cls.TYPE_TIER_1),
+            ("Vidala", cls.AREA_ZITAH, cls.TYPE_TIER_1),
+            ("Vyala", cls.AREA_ZITAH, cls.TYPE_TIER_1),
+            ("Wepwawet", cls.AREA_ZITAH, cls.TYPE_TIER_1),
+            # Zitah tier 2
+            ("Brittlis", cls.AREA_ZITAH, cls.TYPE_TIER_2),
+            ("Ionos", cls.AREA_ZITAH, cls.TYPE_TIER_2),
+            ("Kamohoalii", cls.AREA_ZITAH, cls.TYPE_TIER_2),
+            ("Nosoi", cls.AREA_ZITAH, cls.TYPE_TIER_2),
+            ("Sensual Sandy", cls.AREA_ZITAH, cls.TYPE_TIER_2),
+            ("Umdhlebi", cls.AREA_ZITAH, cls.TYPE_TIER_2),
+            # Zitah tier 3
+            ("Fleetstalker", cls.AREA_ZITAH, cls.TYPE_TIER_3),
+            ("Shockmaw", cls.AREA_ZITAH, cls.TYPE_TIER_3),
+            ("Urmahlullu", cls.AREA_ZITAH, cls.TYPE_TIER_3),
+            # Zitah HELM tier 1
+            ("Alphuachra, Bucca & Puca", cls.AREA_ZITAH, cls.TYPE_HELM_1),
+            ("Blazewing", cls.AREA_ZITAH, cls.TYPE_HELM_1),
+            ("Pazuzu", cls.AREA_ZITAH, cls.TYPE_HELM_1),
+            # Zitah HELM tier 2
+            ("Wrathare", cls.AREA_ZITAH, cls.TYPE_HELM_2),
+
+            # Ru'Aun tier 1
+            ("Asida", cls.AREA_RUAUN, cls.TYPE_TIER_1),
+            ("Bia", cls.AREA_RUAUN, cls.TYPE_TIER_1),
+            ("Emputa", cls.AREA_RUAUN, cls.TYPE_TIER_1),
+            ("Khon", cls.AREA_RUAUN, cls.TYPE_TIER_1),
+            ("Khun", cls.AREA_RUAUN, cls.TYPE_TIER_1),
+            ("Ma", cls.AREA_RUAUN, cls.TYPE_TIER_1),
+            ("Met", cls.AREA_RUAUN, cls.TYPE_TIER_1),
+            ("Peirithoos", cls.AREA_RUAUN, cls.TYPE_TIER_1),
+            ("Ruea", cls.AREA_RUAUN, cls.TYPE_TIER_1),
+            ("Sava Savanovic", cls.AREA_RUAUN, cls.TYPE_TIER_1),
+            ("Tenodera", cls.AREA_RUAUN, cls.TYPE_TIER_1),
+            ("Wasserspeier", cls.AREA_RUAUN, cls.TYPE_TIER_1),
+            # Ru'Aun tier 2
+            ("Amymone", cls.AREA_RUAUN, cls.TYPE_TIER_2),
+            ("Hanbi", cls.AREA_RUAUN, cls.TYPE_TIER_2),
+            ("Kammavaca", cls.AREA_RUAUN, cls.TYPE_TIER_2),
+            ("Naphula", cls.AREA_RUAUN, cls.TYPE_TIER_2),
+            ("Palila", cls.AREA_RUAUN, cls.TYPE_TIER_2),
+            ("Yilan", cls.AREA_RUAUN, cls.TYPE_TIER_2),
+            # Ru'Aun tier 3
+            ("Duke Vepar", cls.AREA_RUAUN, cls.TYPE_TIER_3),
+            ("Pakecet", cls.AREA_RUAUN, cls.TYPE_TIER_3),
+            ("Vir'ava", cls.AREA_RUAUN, cls.TYPE_TIER_3),
+            # Ru'Aun Ark Angels
+            ("Ark Angel EV", cls.AREA_RUAUN, cls.TYPE_ARK_ANGELS),
+            ("Ark Angel GK", cls.AREA_RUAUN, cls.TYPE_ARK_ANGELS),
+            ("Ark Angel HM", cls.AREA_RUAUN, cls.TYPE_ARK_ANGELS),
+            ("Ark Angel MR", cls.AREA_RUAUN, cls.TYPE_ARK_ANGELS),
+            ("Ark Angel TT", cls.AREA_RUAUN, cls.TYPE_ARK_ANGELS),
+            # Ru'Aun Heavenly Beasts
+            ("Byakko", cls.AREA_RUAUN, cls.TYPE_HEAVENLY_BEASTS),
+            ("Genbu", cls.AREA_RUAUN, cls.TYPE_HEAVENLY_BEASTS),
+            ("Kirin", cls.AREA_RUAUN, cls.TYPE_HEAVENLY_BEASTS),
+            ("Seiryu", cls.AREA_RUAUN, cls.TYPE_HEAVENLY_BEASTS),
+            ("Suzaku", cls.AREA_RUAUN, cls.TYPE_HEAVENLY_BEASTS),
+            # Ru'Aun Nazar NM
+            ("Warder of Courage", cls.AREA_RUAUN, cls.TYPE_NAZAR),
+
+            # Riesenjima tier 1
+            ("Belphegor", cls.AREA_REISENJIMA, cls.TYPE_TIER_1),
+            ("Crom Dubh", cls.AREA_REISENJIMA, cls.TYPE_TIER_1),
+            ("Dazzling Dolores", cls.AREA_REISENJIMA, cls.TYPE_TIER_1),
+            ("Golden Kist", cls.AREA_REISENJIMA, cls.TYPE_TIER_1),
+            ("Kabandha", cls.AREA_REISENJIMA, cls.TYPE_TIER_1),
+            ("Mauve-wristed Gomberry", cls.AREA_REISENJIMA, cls.TYPE_TIER_1),
+            ("Oryx", cls.AREA_REISENJIMA, cls.TYPE_TIER_1),
+            ("Sabotender Royal", cls.AREA_REISENJIMA, cls.TYPE_TIER_1),
+            ("Sang Buaya", cls.AREA_REISENJIMA, cls.TYPE_TIER_1),
+            ("Selkit", cls.AREA_REISENJIMA, cls.TYPE_TIER_1),
+            ("Taelmoth the Diremaw", cls.AREA_REISENJIMA, cls.TYPE_TIER_1),
+            ("Zduhac", cls.AREA_REISENJIMA, cls.TYPE_TIER_1),
+            # Riesenjima tier 2
+            ("Bashmu", cls.AREA_REISENJIMA, cls.TYPE_TIER_2),
+            ("Gajasimha", cls.AREA_REISENJIMA, cls.TYPE_TIER_2),
+            ("Ironside", cls.AREA_REISENJIMA, cls.TYPE_TIER_2),
+            ("Old Shuck", cls.AREA_REISENJIMA, cls.TYPE_TIER_2),
+            ("Sarsaok", cls.AREA_REISENJIMA, cls.TYPE_TIER_2),
+            ("Strophadia", cls.AREA_REISENJIMA, cls.TYPE_TIER_2),
+            # Riesenjima tier 2
+            ("Maju", cls.AREA_REISENJIMA, cls.TYPE_TIER_3),
+            ("Neak", cls.AREA_REISENJIMA, cls.TYPE_TIER_3),
+            ("Yakshi", cls.AREA_REISENJIMA, cls.TYPE_TIER_3),
+            # Riesenjima helm 1
+            ("Albumen", cls.AREA_REISENJIMA, cls.TYPE_HELM_1),
+            ("Erinys", cls.AREA_REISENJIMA, cls.TYPE_HELM_1),
+            ("Onychophora", cls.AREA_REISENJIMA, cls.TYPE_HELM_1),
+            ("Schah", cls.AREA_REISENJIMA, cls.TYPE_HELM_1),
+            ("Teles", cls.AREA_REISENJIMA, cls.TYPE_HELM_1),
+            ("Vinipata", cls.AREA_REISENJIMA, cls.TYPE_HELM_1),
+            ("Zerde", cls.AREA_REISENJIMA, cls.TYPE_HELM_1),
+        ):
+            try:
+                cls.objects.get(name=x[0])
+            except cls.DoesNotExist:
+                new = cls(
+                    name=x[0],
+                    area=x[1],
+                    type=x[2]
+                )
+                new.save()
+
+    def __str__(self):
+        return '%s (%s %s)' % (
+            self.name, self.get_area_display(), self.get_type_display()
+        )
+
+
+class AeonicGear(models.Model):
+    name = models.CharField(max_length=60)
+
+    @classmethod
+    def create_defaults(cls):
+        for x in (
+            "Godhands",
+            "Aeneas",
+            "Sequence",
+            "Lionheart",
+            "Tri-edge",
+            "Chango",
+            "Anguta",
+            "Trishula",
+            "Heishi Shorinken",
+            "Dojikiri Yasutsuna",
+            "Tishtrya",
+            "Khatvanga",
+            "Fail-Not",
+            "Fomalhaut",
+            "Marsyas",
+            "Srivatsa",
+        ):
+            try:
+                cls.objects.get(name=x)
+            except cls.DoesNotExist:
+                new = cls(name=x)
+                new.save()
+
+    def __str__(self):
+        return self.name
+
+
+class AeonicsProgress(models.Model):
+    character = models.OneToOneField(
+        Character,
+        on_delete=models.CASCADE
+    )
+    number_of_beads = models.IntegerField(
+        default=0
+    )
+    finished_aeonics = models.ManyToManyField(
+        AeonicGear,
+        related_name="finished_for",
+        blank=True,
+    )
+    malformed_weapon_in_progress = models.ForeignKey(
+        AeonicGear,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="in_progress_for",
+    )
+    killed_nms = models.ManyToManyField(
+        AeonicNM,
+        blank=True
+    )
+
+    def __str__(self):
+        return 'Aeonics progress for %s' % (self.character.name)

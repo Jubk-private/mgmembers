@@ -874,3 +874,26 @@ class PartyBuilder(TemplateView):
         kwargs['roles'] = roles
 
         return super().get_context_data(**kwargs)
+
+
+class AeonicsProgressView(UpdateView):
+    model = mgmodels.AeonicsProgress
+    template_name = 'mgmembers/aeonicsprogressupdate.html'
+    form_class = mgforms.AeonicsProgressForm
+
+    def get_object(self):
+        try:
+            self.character = mgmodels.Character.objects.get(
+                name=self.kwargs.get("name"),
+                owner=self.request.user
+            )
+        except mgmodels.Character.DoesNotExist:
+            raise Http404("Character not found")
+
+        if hasattr(self.character, 'aeonicsprogress'):
+            return self.character.aeonicsprogress
+        else:
+            return self.model(character=self.character)
+
+    def get_success_url(self):
+        return reverse('character', args=[self.character.name])
