@@ -910,7 +910,6 @@ class AeonicsOverview(TemplateView):
         for c in mgmodels.AeonicsProgress.objects.all().order_by(
             "character__name"
         ):
-
             working_on = None
             if c.malformed_weapon_in_progress:
                 working_on = c.malformed_weapon_in_progress
@@ -923,6 +922,29 @@ class AeonicsOverview(TemplateView):
             })
 
         result['characters'] = chars
-        result['all_nms'] = mgmodels.AeonicNM.objects.all()
+        nm_groups = []
+        nm_group = None
+        for x in mgmodels.AeonicNM.objects.all().order_by(
+            "area", "type", "pk"
+        ):
+            if (
+                not nm_group or
+                nm_group["area"] != x.area or
+                nm_group["type"] != x.type
+            ):
+                new_area = not nm_group or nm_group["area"] != x.area
+                nm_group = {
+                    "area": x.area,
+                    "type": x.type,
+                    "new_area": new_area,
+                    "area_name": x.get_area_display(),
+                    "type_name": x.get_type_display(),
+                    "nms": []
+                }
+                nm_groups.append(nm_group)
+            nm_group["nms"].append(x)
+
+        result['nm_groups'] = nm_groups
+        result['number_of_characters'] = len(chars)
 
         return result
