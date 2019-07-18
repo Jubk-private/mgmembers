@@ -897,3 +897,32 @@ class AeonicsProgressView(UpdateView):
 
     def get_success_url(self):
         return reverse('character', args=[self.character.name])
+
+
+class AeonicsOverview(TemplateView):
+    template_name = 'mgmembers/aeonics_overview.html'
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+
+        chars = []
+
+        for c in mgmodels.AeonicsProgress.objects.all().order_by(
+            "character__name"
+        ):
+
+            working_on = None
+            if c.malformed_weapon_in_progress:
+                working_on = c.malformed_weapon_in_progress
+
+            chars.append({
+                "name": c.character.name,
+                "beads": c.number_of_beads,
+                "working_on": working_on,
+                "killed_nms": set([x.id for x in c.killed_nms.all()])
+            })
+
+        result['characters'] = chars
+        result['all_nms'] = mgmodels.AeonicNM.objects.all()
+
+        return result

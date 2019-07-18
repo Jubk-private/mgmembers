@@ -46,3 +46,14 @@ body.gallery .row {
     margin-right: 1em;
     padding: 0 0.5em;
 }
+
+.verticaltableheading {
+    writing-mode: vertical-lr;
+    text-orientation: mixed;
+    /*
+    transform: rotate(-90deg);
+    transform-origin: left top 0;
+    float: left;
+    border: 1px solid  red;
+    */
+}

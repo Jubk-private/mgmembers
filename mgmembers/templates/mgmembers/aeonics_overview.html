@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row text-left">
+  <div class="col-md-12">
+    <h1>Aeonics overview</h1>
+    <div style="overflow-x: auto;">
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          {% for c in characters %}
+          <th scope="col"><div class="verticaltableheading">{{ c.name }}</div></th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for x in all_nms %}
+        <tr>
+          <th scope="row">{{ x.name }} killed</th>
+          {% for char in characters %}
+          <td class="bg-{% if x.id in char.killed_nms %}success{%else%}danger{%endif%}"><span class="fas fa-{% if x.id in char.killed_nms %}check{%else%}times{%endif%}" aria-hidden="true"></span></td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
