@@ -895,6 +895,27 @@ class AeonicsProgressView(UpdateView):
         else:
             return self.model(character=self.character)
 
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+
+        last_area = None
+        last_type = None
+        new_area_pks = {}
+        new_type_pks = {}
+        for x in result["form"]["killed_nms"].field.queryset:
+            if last_area != x.area:
+                new_area_pks[x.pk] = x.get_area_display()
+                last_area = x.area
+            if last_type != x.type:
+                new_type_pks[x.pk] = x.get_type_display()
+                last_type = x.type
+
+        result["new_area_pks"] = new_area_pks
+        result["new_type_pks"] = new_type_pks
+
+        return result
+
     def get_success_url(self):
         return reverse('character', args=[self.character.name])
 

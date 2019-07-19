@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load bootstrap %}
+{% load mg_tools %}
 
 {% block content %}
   <div class="row text-left">
@@ -7,10 +8,77 @@
       <h2>Update Aeonics progress for {{ view.character.name }}</h2>
       <form method="post" role="form" id="wocpopsform">
         {% csrf_token %}
-        {{ form|bootstrap }}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            {% if field.html_name == "finished_aeonics" %}
+            {{ field|bootstrap }}
+            <div style="clear: both;"></div>
+            {% elif field.html_name == "killed_nms" %}
+            <div class="form-group">
+                <label class="control-label  " for="killed_nms">Finished aeonics</label>
+                <a href="javascript:void(null)" class="aeonics-selectall">Select all</a>
+                <a href="javascript:void(null)" class="aeonics-deselectall">Deselect all</a>
+                <div class="multiple-checkbox">
+                    <ul id="killed_nms">
+                        {% for x in field %}
+                            {% if x.data.value in new_type_pks and not forloop.first %}
+                                </ul></li>
+                            {% endif %}
+                            {% if x.data.value in new_area_pks %}
+                                {% if not forloop.first %}
+                                </ul></li>
+                                {%endif%}
+                                <li>
+                                    {{ new_area_pks|hash:x.data.value }}
+                                    <a href="javascript:void(null)" class="aeonics-selectall">Select all</a>
+                                    <a href="javascript:void(null)" class="aeonics-deselectall">Deselect all</a>
+                                </li>
+                                <li><ul>
+                            {% endif %}
+                            {% if x.data.value in new_type_pks %}
+                                <li>
+                                    {{ new_type_pks|hash:x.data.value }}
+                                    <a href="javascript:void(null)" class="aeonics-selectall">Select all</a>
+                                    <a href="javascript:void(null)" class="aeonics-deselectall">Deselect all</a>
+                                </li>
+                                <li><ul>
+                            {% endif%}
+                            <li>{{ x }}</li>
+                        {% endfor %}
+                            </ul></li></ul></li>
+                    </ul>
+                </div>
+            {% else %}
+            {{ field|bootstrap }}
+            {% endif %}
+        {% endfor %}
         <button type="submit" role="button" class="btn btn-primary">Save changes</button>
         <a href="{% url 'character' view.character.name %}" role="button" class="btn btn-danger">Cancel</a>
       </form>
     </div>
   </div>
 {% endblock %}
+{%block extra_scripts %}
+<script type="text/javascript"><!--
+(function($) {
+    function getRootElem(elem) {
+        if($(elem).parent().prop("tagName") == "DIV") {
+            return $(elem).parent();
+        } else {
+            return $(elem).parent().next();
+        }
+    }
+
+    $("a.aeonics-selectall").on("click", function(e) {
+        e.preventDefault();
+        getRootElem(this).find("input").prop("checked", true);
+    });
+
+    $("a.aeonics-deselectall").on("click", function(e) {
+        e.preventDefault();
+        getRootElem(this).find("input").prop("checked", false);
+    });
+
+})(jQuery);
+//--></script>
+{%endblock%}

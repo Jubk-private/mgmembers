@@ -57,3 +57,21 @@ body.gallery .row {
     border: 1px solid  red;
     */
 }
+
+#id_finished_aeonics {
+    list-style: none;
+    margin: 0;
+}
+
+#id_finished_aeonics li {
+    float: left;
+    min-width: 15em;
+    margin: 0;
+    padding: 0;
+}
+
+#killed_nms, #killed_nms ul {
+    list-style: none;
+    margin: 0;
+    padding-left: 1em;
+}
