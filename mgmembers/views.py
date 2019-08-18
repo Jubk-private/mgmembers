@@ -35,7 +35,7 @@ class IndexView(TemplateView):
     template_name = 'mgmembers/index.html'
 
     def get_context_data(self, **kwargs):
-        kwargs['characters'] = mgmodels.Character.objects.all().order_by(
+        kwargs['characters'] = mgmodels.Character.objects.filter(owner__is_active=True).order_by(
             'name'
         )
 

@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block htmltitle %}MG-members{% endblock%}</title>
+
+    <!-- Bootstrap -->
+    <link href="{% static 'mgmembers/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'mgmembers/font-awesome/css/fontawesome-all.min.css' %}" rel="stylesheet">
+    <link href="{% static 'mgmembers/css/main.css' %}" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  {% block extra_head %}{% endblock %}
+  </head>
+  <body class="{% if request.META.PATH_INFO|slice:"11" == "/galleries/" %}gallery{% endif %}">
+
+        {% block content %}
+          <h1>MG-members website</h1>
+          <p>This is default content, someone needs to add a content</p>
+        {% endblock%}
+
+    <script src="{% static 'mgmembers/jquery/jquery-1.12.4.js' %}"></script>
+    <script src="{% static 'mgmembers/bootstrap/js/bootstrap.min.js' %}"></script>
+    {%block extra_scripts %}{%endblock%}
+  </body>
+</html>
