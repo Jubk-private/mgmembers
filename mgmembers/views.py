@@ -816,9 +816,9 @@ class LootJsonView(View):
                 for x in members:
                     try:
                         char = mgmodels.Character.objects.get(name=x)
+                        reg.characters.add(char)
                     except mgmodels.Character.DoesNotExist:
                         pass
-                    reg.characters.add(char)
 
         return self.get(request, *args, **kwargs)
 
