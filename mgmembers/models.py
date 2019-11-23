@@ -1657,6 +1657,9 @@ class DynamisWave3Plan(models.Model):
             return ", ".join(self.jobs_by_role[role])
 
     def character_for_slot(self, party, slot):
+        return getattr(self, "party%s_slot%s" % (party, slot))
+
+    def character_for_slot_display(self, party, slot):
         char = getattr(self, "party%s_slot%s" % (party, slot))
         if char is None:
             char = getattr(self, "party%s_slot%s_other" % (party, slot))

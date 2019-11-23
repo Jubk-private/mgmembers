@@ -44,12 +44,22 @@
         <tr>
           <td scope="col" class="slot-role">{{ slot.role }}</td>
           <td scope="col" class="slot-jobs">{{ slot.jobs }}</td>
-          <td scope="col" class="slot-character">{{ slot.character }}</td>
+          <td scope="col" class="slot-character">
+            {{ slot.character_display }}
+            {% if not slot.character and slot.character_display %}
+              <a href="#footnote_1"><sup>1</sup></a>
+            {% endif%}
+            {% if slot.character.dynamiswave3registration.backup_character %}
+              <a href="#footnote_1"><sup>2</sup></a>
+            {% endif%}
+          </td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
     {% endfor %}
+    <p id="footnote_1"><sup>1</sup> This character is from outside the Linkshell or not registered for wave 3 yet.</p>
+    <p id="footnote_2"><sup>2</sup> This character is a backup character</p>
     {% endif %}
 
     <h2>Clears</h2>

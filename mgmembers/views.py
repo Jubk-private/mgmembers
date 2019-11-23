@@ -1034,6 +1034,7 @@ class DynamisWave3Overview(TemplateView):
                         "role": plan.role_display_for_slot(party_nr, slot_nr),
                         "jobs": plan.jobs_for_slot(party_nr, slot_nr),
                         "character": plan.character_for_slot(party_nr, slot_nr),
+                        "character_display": plan.character_for_slot_display(party_nr, slot_nr),
                     })
                 parties.append(party)
             result["plan_parties"] = parties
@@ -1064,12 +1065,15 @@ class DynamisPlanUpdateView(UpdateView):
         result = super().get_context_data(**kwargs)
 
         result["jobs_by_role_json"] = json.dumps(self.model.jobs_by_role)
-
         result["jobs_by_character"] = {}
+        result["backup_characters"] = {}
 
         for c in mgmodels.Character.objects.filter(
             dynamiswave3registration__isnull=False
         ):
+            if c.dynamiswave3registration.backup_character:
+                result["backup_characters"][c.id] = True
+
             jobs = {}
             for x in c.dynamiswave3registration.wave3jobs.all():
                 jobs[x.name] = True
@@ -1077,6 +1081,9 @@ class DynamisPlanUpdateView(UpdateView):
 
         result["jobs_by_character_json"] = json.dumps(
             result["jobs_by_character"]
+        )
+        result["backup_characters_json"] = json.dumps(
+            result["backup_characters"]
         )
 
         return result

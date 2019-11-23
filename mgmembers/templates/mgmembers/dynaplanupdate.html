@@ -240,7 +240,8 @@
 {% block extra_scripts %}
 <script type="text/javascript"><!--
   let jobs_by_role = {{ jobs_by_role_json|safe }},
-      jobs_by_character = {{ jobs_by_character_json|safe }};
+      jobs_by_character = {{ jobs_by_character_json|safe }}
+      backup_characters = {{ backup_characters_json|safe }};
 
   function has_job(jobs, character_id) {
     let char_jobs = jobs_by_character[character_id] || {};
@@ -281,7 +282,12 @@
       let $other = $(this).parent().find("div input[type=text]"),
           value = $(this).val();
       if(value) {
-        $other.val($(this).find("option:selected").text()).prop("disabled", true);
+        let $opt = $(this).find("option:selected"),
+            text = $opt.text();
+        if(backup_characters[$opt.attr("value")]) {
+          text += " (Backup)";
+        }
+        $other.val(text).prop("disabled", true);
       } else {
         $other.prop("disabled", false);
       }
