@@ -5,9 +5,6 @@
   <div class="col-md-12">
     <h1>Dynamis Wave 3 overview</h1>
 
-    {% if plan %}
-    <h2>Plan for Dynamis on {{ plan.date }}</h2>
-
     {% if request.user.is_superuser %}
       <div class="text-right">
         <a role="button" class="btn btn-success" href="{% url 'dynamis-plan-create' %}">Create new Dynamis plan</a>
@@ -16,6 +13,9 @@
         {% endif %}
       </div>
     {% endif %}    
+
+    {% if plan %}
+    <h2>Plan for Dynamis on {{ plan.date }}</h2>
 
     <p><strong>Date</strong>: {{ plan.date }}</p>
     <p><strong>Zone</strong>: {{ plan.get_zone_display }}</p>
