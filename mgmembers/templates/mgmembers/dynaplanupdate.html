@@ -283,7 +283,7 @@
       if(value) {
         $other.val($(this).find("option:selected").text()).prop("disabled", true);
       } else {
-        $other.val("").prop("disabled", false);
+        $other.prop("disabled", false);
       }
     }).trigger("change");
   })(jQuery);
