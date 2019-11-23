@@ -34,13 +34,15 @@
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="geardropdowntoggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-              Gear choices overview
+              Links
             </a>
             <div class="dropdown-menu" aria-labelledby="geardropdowntoggle">
-              <a class="dropdown-item" href="{% url 'gear-choices-overview' %}">General</a>
-              <a class="dropdown-item" href="{% url 'gear-omen-scales' %}">Omen</a>
-              <a class="dropdown-item" href="{% url 'gear-dynamis-overview' %}">Dynamis</a>
-              <a class="dropdown-item" href="{% url 'gear-rema-overview' %}">REMA Augments</a>
+              <a class="dropdown-item" href="{% url 'gear-choices-overview' %}">General loot choices</a>
+              <a class="dropdown-item" href="{% url 'gear-omen-scales' %}">Omen Scales</a>
+              <a class="dropdown-item" href="{% url 'gear-dynamis-overview' %}">Dynamis Farming</a>
+              <a class="dropdown-item" href="{% url 'aeonics-overview' %}">Aeonics Overview</a>
+              <a class="dropdown-item" href="{% url 'dynamis-wave3-overview' %}">Dynamis wave3</a>
+              <a class="dropdown-item" href="{% url 'party-builder' %}">Party builder</a>
             </div>
           </li>
           {% endif %}

@@ -1489,3 +1489,40 @@ class AeonicsProgress(models.Model):
 
     def __str__(self):
         return 'Aeonics progress for %s' % (self.character.name)
+
+
+class DynamisWave3Registration(models.Model):
+    character = models.OneToOneField(
+        Character,
+        on_delete=models.CASCADE
+    )
+
+    wave3jobs = models.ManyToManyField(
+        Job,
+        verbose_name='Jobs ready for dynamis wave 3',
+        blank=True,
+    )
+
+    BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
+
+    backup_character = models.BooleanField(
+        default=False,
+        verbose_name="Backup character or mule",
+        choices=BOOL_CHOICES
+    )
+
+    windurst_mask_clear = models.BooleanField(default=False)
+    bastok_mask_clear = models.BooleanField(default=False)
+    san_doria_mask_clear = models.BooleanField(default=False)
+    jeuno_mask_clear = models.BooleanField(default=False)
+
+    windurst_boss_clear = models.BooleanField(default=False)
+    bastok_boss_clear = models.BooleanField(default=False)
+    san_doria_boss_clear = models.BooleanField(default=False)
+    jeuno_boss_clear = models.BooleanField(default=False)
+
+    @property
+    def jobs_shortname_list(self):
+        return ",".join(x.name for x in self.wave3jobs.all())
+
+

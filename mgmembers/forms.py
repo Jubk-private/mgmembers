@@ -56,3 +56,11 @@ class AeonicsProgressForm(models.ModelForm):
             self.fields[x[0]].widget = widgets.CheckboxSelectMultiple()
             self.fields[x[0]].queryset = x[1]
 
+class DynamisWave3UpdateForm(models.ModelForm):
+
+    class Meta:
+        exclude = ('character',)
+        model = mg_models.DynamisWave3Registration
+        widgets = {
+            'wave3jobs': forms.CheckboxSelectMultiple
+        }

@@ -969,3 +969,43 @@ class AeonicsOverview(TemplateView):
         result['number_of_characters'] = len(chars)
 
         return result
+
+class DynamisWave3UpdateView(UpdateView):
+    model = mgmodels.DynamisWave3Registration
+    template_name = 'mgmembers/dynawave3update.html'
+    form_class = mgforms.DynamisWave3UpdateForm
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=form_class)
+        form.fields['wave3jobs'].queryset = self.character.primary_event_jobs
+        return form
+
+    def get_object(self):
+        try:
+            self.character = mgmodels.Character.objects.get(
+                name=self.kwargs.get("name"),
+                owner=self.request.user
+            )
+        except mgmodels.Character.DoesNotExist:
+            raise Http404("Character not found")
+
+        if hasattr(self.character, 'dynamiswave3registration'):
+            return self.character.dynamiswave3registration
+        else:
+            return self.model(character=self.character)
+
+    def get_success_url(self):
+        return reverse('character', args=[self.character.name])
+
+
+class DynamisWave3Overview(TemplateView):
+    template_name = "mgmembers/dynawave3overview.html"
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+
+        result['characters'] = mgmodels.Character.objects.filter(
+            owner__is_active=True
+        ).order_by("name")
+
+        return result

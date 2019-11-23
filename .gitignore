@@ -97,3 +97,6 @@ db.sqlite3
 
 ### application ###
 /mgmembers/migrations
+
+### vscode ###
+/.vscode

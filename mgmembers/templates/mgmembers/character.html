@@ -279,6 +279,66 @@
         </div>
       </div>
 
+      <div class="card">
+        <div class="card-header" id="heading7">
+          {% if can_edit %}
+          <div class="btn-toolbar float-right">
+            <div class="btn-group">
+              <a href="{% url 'character-dynamis-wave3' character.name %}" role="button" class="btn btn-primary">
+                Edit Dynamis Wave 3 settings
+              </a>
+            </div>
+          </div>
+          {% endif %}
+          <h4 class="mb-0 cursor-pointer pull-left" data-toggle="collapse" data-target="#collapse7" aria-expanded="true" aria-controls="collapse7">
+            Dynamis wave 3
+          </h4>
+        </div>
+        <div id="collapse7" class="collapse hide" aria-labelledby="heading7" data-parent="#accordion">
+          <div class="card-body">
+            {% with wave3info=character.dynamiswave3registration %}
+            <p>
+              <strong>Dynamis wave 3 jobs:</strong>
+              {{ wave3info.wave3jobs.all|join:", " }}
+            </p>
+            <p>
+              <strong>Is backup character?:</strong>
+              <span class="fa fa-{% if wave3info.backup_character %}check text-success{%else%}times text-danger{%endif%}"></span>
+            </p>
+
+            <table class="table table-bordered table-wave3info" style="width: auto;">
+              <thead>
+                <tr class="table-primary">
+                  <th></th>
+                  <th scope="col">Windurst</th>
+                  <th scope="col">Bastok</th>
+                  <th scope="col">San d'Oria</th>
+                  <th scope="col">Jeuno</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="col" class="table-secondary">Mask clears</th>
+                  <td scope="col"><span class="fa fa-{% if wave3info.windurst_mask_clear %}check text-success{%else%}times text-danger{%endif%}"></span></td>
+                  <td scope="col"><span class="fa fa-{% if wave3info.bastok_mask_clear %}check text-success{%else%}times text-danger{%endif%}"></td>
+                  <td scope="col"><span class="fa fa-{% if wave3info.san_doria_mask_clear %}check text-success{%else%}times text-danger{%endif%}"></td>
+                  <td scope="col"><span class="fa fa-{% if wave3info.jeuno_mask_clear %}check text-success{%else%}times text-danger{%endif%}"></td>
+                </tr>
+                <tr>
+                  <th scope="col" class="table-secondary">Boss clears</th>
+                  <td scope="col"><span class="fa fa-{% if wave3info.windurst_boss_clear %}check text-success{%else%}times text-danger{%endif%}"></td>
+                  <td scope="col"><span class="fa fa-{% if wave3info.bastok_boss_clear %}check text-success{%else%}times text-danger{%endif%}"></td>
+                  <td scope="col"><span class="fa fa-{% if wave3info.san_doria_boss_clear %}check text-success{%else%}times text-danger{%endif%}"></td>
+                  <td scope="col"><span class="fa fa-{% if wave3info.jeuno_boss_clear %}check text-success{%else%}times text-danger{%endif%}"></td>
+                </tr>
+              </tbody>
+            </table>
+            {% endwith %}
+          </div>
+        </div>
+      </div>
+
+
     </div>
   </div>
 </div>

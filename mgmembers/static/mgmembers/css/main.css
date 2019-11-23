@@ -75,3 +75,15 @@ body.gallery .row {
     margin: 0;
     padding-left: 1em;
 }
+
+table.table-wave3info td {
+  text-align: center;
+}
+
+#wave3characteredit ul {
+  list-style: none;
+}
+
+#wave3characteredit label.control-label {
+  font-weight: bold;
+}

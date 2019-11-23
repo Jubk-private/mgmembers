@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row text-left">
+  <div class="col-md-12">
+    <h1>Dynamis Wave 3 overview</h1>
+    <table class="table table-bordered table-wave3info">
+        <thead>
+        <tr class="table-primary">
+            <th scope="col" rowspan="2" class="align-middle text-center">Character/Owner</th>
+            <th scope="col" rowspan="2" class="align-middle text-center">Wave 3 jobs</th>
+            <th scope="col" colspan="4" class="text-center">Mask clears</th>
+            <th scope="col" colspan="4" class="text-center">Boss clears</th>
+        </tr>
+        <tr class="table-primary">
+            <th scope="col" class="text-center">W</th>
+            <th scope="col" class="text-center">B</th>
+            <th scope="col" class="text-center">S</th>
+            <th scope="col" class="text-center">J</th>
+            <th scope="col" class="text-center">W</th>
+            <th scope="col" class="text-center">B</th>
+            <th scope="col" class="text-center">S</th>
+            <th scope="col" class="text-center">J</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for character in characters %}
+            {% if character.dynamiswave3registration %}
+            <tr>
+                {% with wave3info=character.dynamiswave3registration %}
+                <th scope="col" class="table-{% if wave3info.backup_character %}warning{% else %}success{% endif %}">
+                    {{ character.name }} ({{character.owner}})
+                    {% if wave3info.backup_character %}(Backup){% endif %}
+                </th>
+                <th scope="col">{{ wave3info.jobs_shortname_list }}</th>
+                <td scope="col"><span class="fa fa-{% if wave3info.windurst_mask_clear %}check text-success{%else%}times text-danger{%endif%}"></span></td>
+                <td scope="col"><span class="fa fa-{% if wave3info.bastok_mask_clear %}check text-success{%else%}times text-danger{%endif%}"></td>
+                <td scope="col"><span class="fa fa-{% if wave3info.san_doria_mask_clear %}check text-success{%else%}times text-danger{%endif%}"></td>
+                <td scope="col"><span class="fa fa-{% if wave3info.jeuno_mask_clear %}check text-success{%else%}times text-danger{%endif%}"></td>
+                <td scope="col"><span class="fa fa-{% if wave3info.windurst_boss_clear %}check text-success{%else%}times text-danger{%endif%}"></td>
+                <td scope="col"><span class="fa fa-{% if wave3info.bastok_boss_clear %}check text-success{%else%}times text-danger{%endif%}"></td>
+                <td scope="col"><span class="fa fa-{% if wave3info.san_doria_boss_clear %}check text-success{%else%}times text-danger{%endif%}"></td>
+                <td scope="col"><span class="fa fa-{% if wave3info.jeuno_boss_clear %}check text-success{%else%}times text-danger{%endif%}"></td>
+                {% endwith %}
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+  </div>
+</div>
+{% endblock %}
