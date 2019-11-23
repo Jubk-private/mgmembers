@@ -1008,4 +1008,79 @@ class DynamisWave3Overview(TemplateView):
             owner__is_active=True
         ).order_by("name")
 
+        plan_pk = self.request.GET.get("plan_id", -1)
+        plan = None
+        try:
+            plan = mgmodels.DynamisWave3Plan.objects.get(pk=plan_pk)
+        except mgmodels.DynamisWave3Plan.DoesNotExist:
+            pass
+        if not plan:
+            plan = mgmodels.DynamisWave3Plan.objects.filter(
+                date__gte=timezone.now(),
+            ).first() or mgmodels.DynamisWave3Plan.objects.order_by(
+                "-date"
+            ).first()
+
+        if plan:
+            result["plan"] = plan
+            parties = []
+            for party_nr in range(1, 4):
+                party = {
+                    "nr": party_nr,
+                    "slots": []
+                }
+                for slot_nr in range(1, 7):
+                    party["slots"].append({
+                        "role": plan.role_display_for_slot(party_nr, slot_nr),
+                        "jobs": plan.jobs_for_slot(party_nr, slot_nr),
+                        "character": plan.character_for_slot(party_nr, slot_nr),
+                    })
+                parties.append(party)
+            result["plan_parties"] = parties
+
+        result["plans"] = mgmodels.DynamisWave3Plan.objects.order_by("-date")
+
         return result
+
+
+class DynamisPlanUpdateView(UpdateView):
+    model = mgmodels.DynamisWave3Plan
+    template_name = 'mgmembers/dynaplanupdate.html'
+    form_class = mgforms.DynamisPlanUpdateForm
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user or not request.user.is_superuser:
+            return HttpResponseRedirect(self.get_success_url())
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_object(self):
+        pk = self.kwargs.get("pk")
+        if(pk):
+            return self.model.objects.get(pk=pk)
+        else:
+            return self.model()
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+
+        result["jobs_by_role_json"] = json.dumps(self.model.jobs_by_role)
+
+        result["jobs_by_character"] = {}
+
+        for c in mgmodels.Character.objects.filter(
+            dynamiswave3registration__isnull=False
+        ):
+            jobs = {}
+            for x in c.dynamiswave3registration.wave3jobs.all():
+                jobs[x.name] = True
+            result["jobs_by_character"][c.id] = jobs
+
+        result["jobs_by_character_json"] = json.dumps(
+            result["jobs_by_character"]
+        )
+
+        return result
+
+    def get_success_url(self):
+
+        return reverse('dynamis-wave3-overview') + "?plan_id=%s" % (self.object.pk)

@@ -87,3 +87,48 @@ table.table-wave3info td {
 #wave3characteredit label.control-label {
   font-weight: bold;
 }
+
+#dyna-plan-edit table {
+  width: auto;
+}
+
+#dyna-plan-edit td,
+#dyna-plan-edit th {
+  padding: 0.25em;
+  margin: 0;
+}
+
+#dyna-plan-edit td.role-select {
+  min-width: 8em;
+}
+#dyna-plan-edit td.jobs-list {
+  min-width: 26em;
+}
+#dyna-plan-edit td.character-select div {
+  display: inline;
+}
+#dyna-plan-edit td.character-select select,
+#dyna-plan-edit td.character-select input {
+  min-width: 12em;
+}
+
+table.table-partyplan {
+  width: auto;
+}
+
+table.table-partyplan,
+table.table-partyplan td,
+table.table-partyplan th {
+  padding: 0.25em;
+  margin: 0;
+}
+
+table.table-partyplan td.slot-role {
+  min-width: 8em;
+}
+table.table-partyplan td.slot-jobs {
+  min-width: 28em;
+}
+table.table-partyplan td.slot-character {
+  min-width: 12em;
+}

@@ -1526,3 +1526,140 @@ class DynamisWave3Registration(models.Model):
         return ",".join(x.name for x in self.wave3jobs.all())
 
 
+def build_character_ref(party, position):
+    return models.ForeignKey(Character, 
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="dw3_p%s_slot%s_assigments" % (
+            party, position
+        )
+    )
+
+class DynamisWave3Plan(models.Model):
+    date = models.DateField()
+
+    ZONE_CHOICES = (
+        ("san_doria", "San d'Oria"),
+        ("bastok", "Bastok"),
+        ("windurst", "Windurst"),
+        ("jeuno", "Jeuno"),
+    )
+
+    zone = models.CharField(
+        max_length=10,
+        choices=ZONE_CHOICES,
+        default="san_doria",
+    )
+
+    role_choices = (
+        ("main_tank", "Main tank"),
+        ("off_tank", "Off tank"),
+        ("support", "Support"),
+        ("RDM", "RDM"),
+        ("BRD", "BRD"),
+        ("COR", "COR"),
+        ("GEO", "GEO"),
+        ("healer", "Healer"),
+        ("dd", "DD"),
+    )
+
+    jobs_by_role = {
+        "main_tank": ["RUN", "PLD"],
+        "off_tank": ["RUN", "PLD"],
+        "support": ["SMN", "BST", "BRD", "GEO"],
+        "RDM": ["RDM"],
+        "BRD": ["BRD"],
+        "COR": ["COR"],
+        "GEO": ["GEO"],
+        "healer": ["WHM", "SCH"],
+        "dd": ["WAR", "MNK", "THF", "DRK", "RNG", "DRG", "SAM", "BLU", "COR", "DNC"],
+    }
+
+    other_kwargs = {"max_length": 20, "blank": True, "null": True}
+    role_kwargs = {"max_length": 10, "choices": role_choices}
+
+    party1_slot1 = build_character_ref(1, 1)
+    party1_slot1_role = models.CharField(default="main_tank", **role_kwargs)
+    party1_slot1_other = models.CharField(**other_kwargs)
+    party1_slot2 = build_character_ref(1, 2)
+    party1_slot2_role = models.CharField(default="off_tank", **role_kwargs)
+    party1_slot2_other = models.CharField(**other_kwargs)
+    party1_slot3 = build_character_ref(1, 3)
+    party1_slot3_role = models.CharField(default="support", **role_kwargs)
+    party1_slot3_other = models.CharField(**other_kwargs)
+    party1_slot4 = build_character_ref(1, 4)
+    party1_slot4_role = models.CharField(default="support", **role_kwargs)
+    party1_slot4_other = models.CharField(**other_kwargs)
+    party1_slot5 = build_character_ref(1, 5)
+    party1_slot5_role = models.CharField(default="support", **role_kwargs)
+    party1_slot5_other = models.CharField(**other_kwargs)
+    party1_slot6 = build_character_ref(1, 6)
+    party1_slot6_role = models.CharField(default="healer", **role_kwargs)
+    party1_slot6_other = models.CharField(**other_kwargs)
+
+    party2_slot1 = build_character_ref(2, 1)
+    party2_slot1_role = models.CharField(default="dd", **role_kwargs)
+    party2_slot1_other = models.CharField(**other_kwargs)
+    party2_slot2 = build_character_ref(2, 2)
+    party2_slot2_role = models.CharField(default="dd", **role_kwargs)
+    party2_slot2_other = models.CharField(**other_kwargs)
+    party2_slot3 = build_character_ref(2, 3)
+    party2_slot3_role = models.CharField(default="COR", **role_kwargs)
+    party2_slot3_other = models.CharField(**other_kwargs)
+    party2_slot4 = build_character_ref(2, 4)
+    party2_slot4_role = models.CharField(default="BRD", **role_kwargs)
+    party2_slot4_other = models.CharField(**other_kwargs)
+    party2_slot5 = build_character_ref(2, 5)
+    party2_slot5_role = models.CharField(default="GEO", **role_kwargs)
+    party2_slot5_other = models.CharField(**other_kwargs)
+    party2_slot6 = build_character_ref(2, 6)
+    party2_slot6_role = models.CharField(default="healer", **role_kwargs)
+    party2_slot6_other = models.CharField(**other_kwargs)
+
+    party3_slot1 = build_character_ref(3, 1)
+    party3_slot1_role = models.CharField(default="dd", **role_kwargs)
+    party3_slot1_other = models.CharField(**other_kwargs)
+    party3_slot2 = build_character_ref(3, 2)
+    party3_slot2_role = models.CharField(default="dd", **role_kwargs)
+    party3_slot2_other = models.CharField(**other_kwargs)
+    party3_slot3 = build_character_ref(3, 3)
+    party3_slot3_role = models.CharField(default="COR", **role_kwargs)
+    party3_slot3_other = models.CharField(**other_kwargs)
+    party3_slot4 = build_character_ref(3, 4)
+    party3_slot4_role = models.CharField(default="BRD", **role_kwargs)
+    party3_slot4_other = models.CharField(**other_kwargs)
+    party3_slot5 = build_character_ref(3, 5)
+    party3_slot5_role = models.CharField(default="GEO", **role_kwargs)
+    party3_slot5_other = models.CharField(**other_kwargs)
+    party3_slot6 = build_character_ref(3, 6)
+    party3_slot6_role = models.CharField(default="healer", **role_kwargs)
+    party3_slot6_other = models.CharField(**other_kwargs)
+
+    notes = models.TextField(blank=True)
+
+    def role_for_slot(self, party, slot):
+        return getattr(self, "party%s_slot%s_role" % (party, slot)) 
+
+    def role_display_for_slot(self, party, slot):
+        method = getattr(
+            self, "get_party%s_slot%s_role_display" % (party, slot)
+        )
+
+        if method:
+            return method()
+
+        return ""
+
+    def jobs_for_slot(self, party, slot):
+        role = self.role_for_slot(party, slot)
+        if role and role in self.jobs_by_role:
+            return ", ".join(self.jobs_by_role[role])
+
+    def character_for_slot(self, party, slot):
+        char = getattr(self, "party%s_slot%s" % (party, slot))
+        if char is None:
+            char = getattr(self, "party%s_slot%s_other" % (party, slot))
+        if char is None:
+            char = ""
+        return char

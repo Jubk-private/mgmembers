@@ -1,0 +1,291 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+
+{% block content %}
+  <div id="dyna-plan-edit" class="row text-left">
+    <div class="col-md-12">
+      <h1>Edit/Create Dynamis Plan</h1>
+      <form method="post" role="form" id="dynagearform">
+        {% csrf_token %}
+
+        {{form.date|bootstrap}}
+
+        {{form.zone|bootstrap}}
+
+        <h2>Party 1</h2>
+        <table class="table table-bordered">
+          <thead>
+            <tr class="table-primary">
+              <th scope="col" class="align-middle text-center">Role</th>
+              <th scope="col" class="align-middle text-center">Jobs</th>
+              <th scope="col" class="align-middle text-center">Character</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td scope="col" class="role-select">{{form.party1_slot1_role}}</td>
+              <td scope="col" class="jobs-list"></td>
+              <td class="character-select text-right">
+                {{ form.party1_slot1 }}
+                <div id="party1_slot1_other_container">
+                  {{ form.party1_slot1_other }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td scope="col" class="role-select">{{form.party1_slot2_role}}</td>
+              <td scope="col" class="jobs-list"></td>
+              <td class="character-select text-right">
+                {{ form.party1_slot2 }}
+                <div id="party1_slot2_other_container">
+                  {{ form.party1_slot2_other }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td scope="col" class="role-select">{{form.party1_slot3_role}}</td>
+              <td scope="col" class="jobs-list"></td>
+              <td class="character-select text-right">
+                {{ form.party1_slot3 }}
+                <div id="party1_slot3_other_container">
+                  {{ form.party1_slot3_other }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td scope="col" class="role-select">{{form.party1_slot4_role}}</td>
+              <td scope="col" class="jobs-list"></td>
+              <td class="character-select text-right">
+                {{ form.party1_slot4 }}
+                <div id="party1_slot4_other_container">
+                  {{ form.party1_slot4_other }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td scope="col" class="role-select">{{form.party1_slot5_role}}</td>
+              <td scope="col" class="jobs-list"></td>
+              <td class="character-select text-right">
+                {{ form.party1_slot5 }}
+                <div id="party1_slot5_other_container">
+                  {{ form.party1_slot5_other }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td scope="col" class="role-select">{{form.party1_slot6_role}}</td>
+              <td scope="col" class="jobs-list"></td>
+              <td class="character-select text-right">
+                {{ form.party1_slot6 }}
+                <div id="party1_slot6_other_container">
+                  {{ form.party1_slot6_other }}
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Party 2</h2>
+        <table class="table table-bordered">
+          <thead>
+            <tr class="table-primary">
+              <th scope="col" class="align-middle text-center">Role</th>
+              <th scope="col" class="align-middle text-center">Jobs</th>
+              <th scope="col" class="align-middle text-center">Character</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td scope="col" class="role-select">{{form.party2_slot1_role}}</td>
+              <td scope="col" class="jobs-list"></td>
+              <td class="character-select text-right">
+                {{ form.party2_slot1 }}
+                <div id="party2_slot1_other_container">
+                  {{ form.party2_slot1_other }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td scope="col" class="role-select">{{form.party2_slot2_role}}</td>
+              <td scope="col" class="jobs-list"></td>
+              <td class="character-select text-right">
+                {{ form.party2_slot2 }}
+                <div id="party2_slot2_other_container">
+                  {{ form.party2_slot2_other }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td scope="col" class="role-select">{{form.party2_slot3_role}}</td>
+              <td scope="col" class="jobs-list"></td>
+              <td class="character-select text-right">
+                {{ form.party2_slot3 }}
+                <div id="party2_slot3_other_container">
+                  {{ form.party2_slot3_other }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td scope="col" class="role-select">{{form.party2_slot4_role}}</td>
+              <td scope="col" class="jobs-list"></td>
+              <td class="character-select text-right">
+                {{ form.party2_slot4 }}
+                <div id="party2_slot4_other_container">
+                  {{ form.party2_slot4_other }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td scope="col" class="role-select">{{form.party2_slot5_role}}</td>
+              <td scope="col" class="jobs-list"></td>
+              <td class="character-select text-right">
+                {{ form.party2_slot5 }}
+                <div id="party2_slot5_other_container">
+                  {{ form.party2_slot5_other }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td scope="col" class="role-select">{{form.party2_slot6_role}}</td>
+              <td scope="col" class="jobs-list"></td>
+              <td class="character-select text-right">
+                {{ form.party2_slot6 }}
+                <div id="party2_slot6_other_container">
+                  {{ form.party2_slot6_other }}
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Party 3</h2>
+        <table class="table table-bordered">
+          <thead>
+            <tr class="table-primary">
+              <th scope="col" class="align-middle text-center">Role</th>
+              <th scope="col" class="align-middle text-center">Jobs</th>
+              <th scope="col" class="align-middle text-center">Character</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td scope="col" class="role-select">{{form.party3_slot1_role}}</td>
+              <td scope="col" class="jobs-list"></td>
+              <td class="character-select text-right">
+                {{ form.party3_slot1 }}
+                <div id="party3_slot1_other_container">
+                  {{ form.party3_slot1_other }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td scope="col" class="role-select">{{form.party3_slot2_role}}</td>
+              <td scope="col" class="jobs-list"></td>
+              <td class="character-select text-right">
+                {{ form.party3_slot2 }}
+                <div id="party3_slot2_other_container">
+                  {{ form.party3_slot2_other }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td scope="col" class="role-select">{{form.party3_slot3_role}}</td>
+              <td scope="col" class="jobs-list"></td>
+              <td class="character-select text-right">
+                {{ form.party3_slot3 }}
+                <div id="party3_slot3_other_container">
+                  {{ form.party3_slot3_other }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td scope="col" class="role-select">{{form.party3_slot4_role}}</td>
+              <td scope="col" class="jobs-list"></td>
+              <td class="character-select text-right">
+                {{ form.party3_slot4 }}
+                <div id="party3_slot4_other_container">
+                  {{ form.party3_slot4_other }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td scope="col" class="role-select">{{form.party3_slot5_role}}</td>
+              <td scope="col" class="jobs-list"></td>
+              <td class="character-select text-right">
+                {{ form.party3_slot5 }}
+                <div id="party3_slot5_other_container">
+                  {{ form.party3_slot5_other }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td scope="col" class="role-select">{{form.party3_slot6_role}}</td>
+              <td scope="col" class="jobs-list"></td>
+              <td class="character-select text-right">
+                {{ form.party3_slot6 }}
+                <div id="party3_slot6_other_container">
+                  {{ form.party3_slot6_other }}
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <button type="submit" role="button" class="btn btn-primary">Save changes</button>
+        <a href="{% url 'dynamis-wave3-overview' %}" role="button" class="btn btn-danger">Cancel</a>
+      </form>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script type="text/javascript"><!--
+  let jobs_by_role = {{ jobs_by_role_json|safe }},
+      jobs_by_character = {{ jobs_by_character_json|safe }};
+
+  function has_job(jobs, character_id) {
+    let char_jobs = jobs_by_character[character_id] || {};
+        match = false;
+
+    $.each(jobs, function(i, x) {
+      console.log(char_jobs, x);
+
+      if(char_jobs[x]) {
+        match = true;
+        return false;
+      }
+    });
+  
+    return match;
+  }
+
+  (function($) {
+    $("td.role-select select").on("change", function() {
+      let jobs = jobs_by_role[$(this).val()];
+      if(jobs) {
+        $(this).parent().next().text(jobs.join(", "));
+        $(this).parent().parent().find(
+          ".character-select option"
+        ).each(function() {
+          let character_id = $(this).attr("value")
+          if(!character_id || has_job(jobs, character_id)) {
+              $(this).show()
+          } else {
+              $(this).hide()
+          }
+        });
+      } else {
+        $(this).parent().next().text("");
+      }
+    }).trigger("change");
+    $("td.character-select select").on("change", function() {
+      let $other = $(this).parent().find("div input[type=text]"),
+          value = $(this).val();
+      if(value) {
+        $other.val($(this).find("option:selected").text()).prop("disabled", true);
+      } else {
+        $other.val("").prop("disabled", false);
+      }
+    })
+  })(jQuery);
+--></script>
+{% endblock %}

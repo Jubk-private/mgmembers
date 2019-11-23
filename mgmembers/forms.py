@@ -64,3 +64,31 @@ class DynamisWave3UpdateForm(models.ModelForm):
         widgets = {
             'wave3jobs': forms.CheckboxSelectMultiple
         }
+
+class DynamisPlanUpdateForm(models.ModelForm):
+
+    class Meta:
+        exclude = []
+        model = mg_models.DynamisWave3Plan
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'})
+        }
+
+    tank_jobs = ("RUN", "PLD")
+    support_jobs = ()
+
+    filter_map = {
+
+    }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        dyna_char_qs = mg_models.Character.objects.filter(
+            dynamiswave3registration__isnull=False
+        )
+
+        for x in self.fields:
+            if (x.startswith("party")
+                and not (x.endswith("role") or x.endswith("other"))):
+                self.fields[x].queryset = dyna_char_qs

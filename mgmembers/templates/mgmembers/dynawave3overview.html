@@ -4,6 +4,55 @@
 <div class="row text-left">
   <div class="col-md-12">
     <h1>Dynamis Wave 3 overview</h1>
+
+    {% if plan %}
+    <h2>Plan for Dynamis on {{ plan.date }}</h2>
+
+    {% if request.user.is_superuser %}
+      <div class="text-right">
+        <a role="button" class="btn btn-success" href="{% url 'dynamis-plan-create' %}">Create new Dynamis plan</a>
+        {% if plan %}
+        <a role="button" class="btn btn-primary" href="{% url 'dynamis-plan-edit' plan.pk %}">Edit current Dynamis plan</a>
+        {% endif %}
+      </div>
+    {% endif %}    
+
+    <p><strong>Date</strong>: {{ plan.date }}</p>
+    <p><strong>Zone</strong>: {{ plan.get_zone_display }}</p>
+    <form name="other_dynamis_form" action="{{request.uri}}" method="GET">
+      <label for="plan_id"><strong>Show other Dynamis run</strong></label>:
+      <select name="plan_id" id="plan_id">
+        {% for x in plans %}
+        <option value="{{ x.pk }}"{% if x.pk == plan.pk %}selected="selected"{% endif %}>Dynamis {{ x.get_zone_display }} on {{ x.date }}</option>
+        {% endfor %}
+      </select>
+      <input type="submit" value="Show" />
+    </form>
+
+    {% for party in plan_parties %}
+    <div><strong>Party {{party.nr}}</strong></div>
+    <table class="table table-bordered table-partyplan text-center" style="margin-bottom: 1em">
+      <thead>
+        <tr class="table-primary">
+          <th scope="col" class="align-middle text-center">Role</th>
+          <th scope="col" class="align-middle text-center">Jobs</th>
+          <th scope="col" class="align-middle text-center">Character</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for slot in party.slots %}
+        <tr>
+          <td scope="col" class="slot-role">{{ slot.role }}</td>
+          <td scope="col" class="slot-jobs">{{ slot.jobs }}</td>
+          <td scope="col" class="slot-character">{{ slot.character }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endfor %}
+    {% endif %}
+
+    <h2>Clears</h2>
     <table class="table table-bordered table-wave3info">
         <thead>
         <tr class="table-primary">
