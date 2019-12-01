@@ -46,3 +46,18 @@
     </div>
   </div>
 {% endblock %}
+{% block extra_scripts %}
+<script type="text/javascript"><!--
+(function($){
+  // Automatically check mask if boss is checked.
+  $('#wave3characteredit input[type=checkbox]').on("change", function() {
+    let $this = $(this),
+        id = $this.attr("id") ||'';
+    if($this.prop("checked") && id.match(/_boss_/)) {
+      id = id.replace(/_boss_/, "_mask_")
+      $('#' + id).prop("checked", true);
+    }
+  });
+})(jQuery);
+--></script>
+{% endblock %}
