@@ -10,6 +10,8 @@
 
         {{ form.backup_character|bootstrap }}
 
+        <p>This list only shows jobs that has been chosen as primary event jobs.</p>
+        <p><a href="{% url 'character-jobs-edit' view.character.name %}">Click here to edit your primary event jobs.</a></p>
         {{ form.wave3jobs|bootstrap }}
 
         <div><strong>Clears</strong></div>
