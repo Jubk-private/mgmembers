@@ -927,6 +927,7 @@ class AeonicsOverview(TemplateView):
         result = super().get_context_data(**kwargs)
 
         chars = []
+        non_aeonic_chars = []
 
         for c in mgmodels.AeonicsProgress.objects.all().order_by(
             "character__name"
@@ -935,38 +936,70 @@ class AeonicsOverview(TemplateView):
             if c.malformed_weapon_in_progress:
                 working_on = c.malformed_weapon_in_progress
 
-            chars.append({
-                "name": c.character.name,
-                "beads": c.number_of_beads,
-                "working_on": working_on,
-                "killed_nms": set([x.id for x in c.killed_nms.all()])
-            })
+                chars.append({
+                    "id": c.character.id,
+                    "name": c.character.name,
+                    "beads": c.number_of_beads,
+                    "working_on": working_on,
+                    "killed_nms": set([x.id for x in c.killed_nms.all()])
+                })
+            else:
+                non_aeonic_chars.append({
+                    "name": c.character.name,
+                    "beads": c.number_of_beads
+                })
 
         result['characters'] = chars
-        nm_groups = []
-        nm_group = None
+        areas = []
+        current_area = { "id": -1 }
+        current_type = { "id": -1 }
         for x in mgmodels.AeonicNM.objects.all().order_by(
             "area", "type", "pk"
         ):
-            if (
-                not nm_group or
-                nm_group["area"] != x.area or
-                nm_group["type"] != x.type
-            ):
-                new_area = not nm_group or nm_group["area"] != x.area
-                nm_group = {
-                    "area": x.area,
-                    "type": x.type,
-                    "new_area": new_area,
-                    "area_name": x.get_area_display(),
-                    "type_name": x.get_type_display(),
-                    "nms": []
+            if current_area["id"] != x.area:
+                current_area = {
+                    "id": x.area,
+                    "name": x.get_area_display(),
+                    "types": [],
+                    "characters": []
                 }
-                nm_groups.append(nm_group)
-            nm_group["nms"].append(x)
+                areas.append(current_area)
 
-        result['nm_groups'] = nm_groups
-        result['number_of_characters'] = len(chars)
+            if current_type["id"] != x.type:
+                current_type = {
+                    "id": x.type,
+                    "name": x.get_type_display(),
+                    "nms": [],
+                }
+                current_area["types"].append(current_type)
+
+            current_type["nms"].append(x)
+
+        for area in areas:
+            partial_completion_characters = set()
+
+            for type in area["types"]:
+                for nm in type["nms"]:
+                    for char in chars:
+                        if not nm.id in char["killed_nms"]:
+                            partial_completion_characters.add(char["id"])
+            next_area_chars = []
+
+            # Filter current characters: Any with a partial completion for this
+            # area are stored on the area, the rest passes on to the next area.
+            for char in chars:
+                if char["id"] in partial_completion_characters:
+                    area["characters"].append(char)
+                else:
+                    next_area_chars.append(char)
+
+            area["number_of_characters"] = len(area["characters"])
+
+            chars = next_area_chars
+
+        result["characters_not_working_on_aeonics"] = non_aeonic_chars
+        result["areas"] = areas
+        result["fully_completed_characters"] = chars
 
         return result
 

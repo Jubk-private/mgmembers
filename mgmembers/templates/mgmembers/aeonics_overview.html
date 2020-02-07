@@ -7,29 +7,36 @@
 <div class="row text-left">
   <div class="col-md-12">
     <h1>Aeonics overview</h1>
+
+    {% if characters_not_working_on_aeonics %}
+    <h2>Characters not currently working on an Aeonic</h2>
+    <p>
+    {% for c in characters_not_working_on_aeonics %}
+      <span class="badge badge-secondary">{{ c.name }} ({{ c.beads|default:0 }} beads)</span>
+    {% endfor %}
+    </p>
+    {% endif %}
+
+    {% for area in areas %}
+    {% if area.number_of_characters > 0 %}
     <table class="table table-striped table-bordered table-sm table-hover" style="position: relative;">
       <thead>
         <tr class="table-primary">
-          <th scope="col" style="position: sticky; top: 0;">Zone / Tier / NM name</th>
-          {% for c in characters %}
+          <th scope="col" style="position: sticky; top: 0;">{{ area.name }}</th>
+          {% for c in area.characters %}
           <th scope="col" style="position: sticky; top: 0;"><div class="verticaltableheading">{{ c.name }}</div></th>
           {% endfor %}
         </tr>
       </thead>
       <tbody>
-        {% for g in nm_groups %}
-            {% if g.new_area %}
-            <tr class="table-info">
-                <th scope="colgroup" colspan="{{ number_of_characters|add:1 }}"><strong>{{ g.area_name }}</strong></th>
+        {% for type in area.types %}
+            <tr class="table-secondary"">
+                <th scope="colgroup" colspan="{{ area.number_of_characters|add:1 }}">{{ type.name }}</th>
             </tr>
-            {% endif%}
-            <tr class="table-secondary">
-                <th scope="colgroup" colspan="{{ number_of_characters|add:1 }}" style="padding-left: 1em">{{ g.type_name }}</th>
-            </tr>
-            {% for x in g.nms %}
+            {% for x in type.nms %}
             <tr>
-              <th scope="row" style="padding-left: 2em">{{ x.name }}</th>
-              {% for char in characters %}
+              <th scope="row" style="padding-left: 1em; max-width: 20%">{{ x.name }}</th>
+              {% for char in area.characters %}
               <td class="bg-{% if x.id in char.killed_nms %}success{%else%}danger{%endif%}"><span class="fas fa-{% if x.id in char.killed_nms %}check{%else%}times{%endif%}" aria-hidden="true"></span></td>
               {% endfor %}
             </tr>
@@ -37,6 +44,19 @@
         {% endfor %}
       </tbody>
     </table>
+    {% endif %}
+    {% endfor %}
+
+    {% if fully_completed_characters %}
+    <h2>Fully completed characters</h2>
+    <p>
+    {% for c in fully_completed_characters %}
+      <span class="badge badge-secondary">{{ c.name }} ({{ c.beads|default:0 }} beads)</span>
+    {% endfor %}
+    </p>
+    {% endif %}
+
+
   </div>
 </div>
 {% endblock %}
