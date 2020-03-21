@@ -338,6 +338,29 @@
         </div>
       </div>
 
+      <div class="card">
+        <div class="card-header" id="heading8">
+          {% if can_edit %}
+          <div class="btn-toolbar float-right">
+            <div class="btn-group">
+              <a href="{% url 'character-registered-drops' character.name %}" role="button" class="btn btn-primary">
+                Register drops
+              </a>
+            </div>
+          </div>
+          {% endif %}
+          <h4 class="mb-0 cursor-pointer pull-left" data-toggle="collapse" data-target="#collapse8" aria-expanded="true" aria-controls="collapse8">
+            Registered drops
+          </h4>
+        </div>
+        <div id="collapse8" class="collapse hide" aria-labelledby="heading8" data-parent="#accordion">
+          <div class="card-body">
+            Click here to register drops that you have already gotten on this character.
+          </div>
+        </div>
+      </div>
+
+
 
     </div>
   </div>

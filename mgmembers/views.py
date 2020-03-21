@@ -743,11 +743,18 @@ class LootJsonView(View):
         for item in self.scale_map.values():
             loot[item] = {}
 
+        already_registered = {}
+        for x in mgmodels.LootItem.objects.all():
+            already_registered[x.name] = {}
+            for c in x.character_set.all():
+                already_registered[x.name][c.name] = True
+
         def add_lotter(item, name):
             if item not in loot:
                 loot[item] = {}
 
-            loot[item][name] = True
+            if not already_registered.get(item, {}).get(name, False):
+                loot[item][name] = True
 
         qs = mgmodels.Character.objects.filter(
             owner__is_active=True
@@ -1124,3 +1131,61 @@ class DynamisPlanUpdateView(UpdateView):
     def get_success_url(self):
 
         return reverse('dynamis-wave3-overview') + "?plan_id=%s" % (self.object.pk)
+
+
+class RegisteredDropsView(UpdateView):
+    model = mgmodels.Character
+    template_name = 'mgmembers/registered_drops.html'
+    fields = ("registered_drops",)
+
+    def get_object(self):
+        try:
+            self.character = mgmodels.Character.objects.get(
+                name=self.kwargs.get("name"),
+                owner=self.request.user
+            )
+        except mgmodels.Character.DoesNotExist:
+            raise Http404("Character not found")
+
+        return self.character
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+
+        selected = set()
+        for x in result["form"].initial["registered_drops"]:
+            selected.add(x.id)
+
+        loot_items = []
+        current_category = None
+        current_2nd_category = None
+        for x in mgmodels.LootItem.objects.all():
+            if not current_category or x.category != current_category["id"]:
+                current_category = {
+                    "id": x.category,
+                    "name": x.get_category_display(),
+                    "subcategories": [],
+                }
+                loot_items.append(current_category)
+            if (not current_2nd_category or 
+                current_2nd_category["name"] != x.second_category):
+                current_2nd_category = {
+                    "name": x.second_category,
+                    "items": []
+                }
+                current_category["subcategories"].append(current_2nd_category)
+            print(x.id in selected)
+            if x.id in selected:
+                x.selected = True
+            else:
+                x.selected = False
+            current_2nd_category["items"].append(x)
+
+        result["loot_items"] = loot_items
+        result["selected"] = {}
+
+        return result
+
+
+    def get_success_url(self):
+        return reverse('character', args=[self.character.name])

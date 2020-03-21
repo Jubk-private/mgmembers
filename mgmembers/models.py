@@ -51,6 +51,8 @@ class Character(models.Model):
         related_query_name='character',
     )
 
+    registered_drops = models.ManyToManyField('LootItem')
+
     @property
     def primary_event_jobs(self):
         return self.jobs.filter(
@@ -1666,3 +1668,107 @@ class DynamisWave3Plan(models.Model):
         if char is None:
             char = ""
         return char
+
+class LootItem(models.Model):
+
+    class Meta:
+        ordering = ['category', 'second_category', 'name']
+
+    LOOTITEM_CATEGORY_OMEN = 1
+    LOOTITEM_CATEGORY_DYNAMIS = 2
+
+    name = models.CharField(
+        max_length=30
+    )
+
+    category_options = (
+        (LOOTITEM_CATEGORY_OMEN, "Omen"),
+        (LOOTITEM_CATEGORY_DYNAMIS, "Dynamis"),
+    )
+
+    category = models.IntegerField(
+        choices=category_options,
+        null=True,
+        blank=True,
+        default=None,
+    )
+
+    second_category = models.CharField(
+        max_length=30,
+        blank=True,
+        null=True,
+        default=None,
+    )
+
+    defaults = [
+        ("Niqmaddu Ring", LOOTITEM_CATEGORY_OMEN, "Fu"),
+        ("Shulmanu collar", LOOTITEM_CATEGORY_OMEN, "Fu"),
+        ("Nisroch jerkin", LOOTITEM_CATEGORY_OMEN, "Fu"),
+        ("Enmerkar earring", LOOTITEM_CATEGORY_OMEN, "Kyou"),
+        ("Iskur gorget", LOOTITEM_CATEGORY_OMEN, "Kyou"),
+        ("Udug jacket", LOOTITEM_CATEGORY_OMEN, "Kyou"),
+        ("Ammurapi shield", LOOTITEM_CATEGORY_OMEN, "Kei"),
+        ("Lugalbanda earring", LOOTITEM_CATEGORY_OMEN, "Kei"),
+        ("Shamash robe", LOOTITEM_CATEGORY_OMEN, "Kei"),
+        ("Yamarang", LOOTITEM_CATEGORY_OMEN, "Gin"),
+        ("Dingir ring", LOOTITEM_CATEGORY_OMEN, "Gin"),
+        ("Ashera harness", LOOTITEM_CATEGORY_OMEN, "Gin"),
+        ("Utu grip", LOOTITEM_CATEGORY_OMEN, "Kin"),
+        ("Ilabrat ring", LOOTITEM_CATEGORY_OMEN, "Kin"),
+        ("Dagon breastplate", LOOTITEM_CATEGORY_OMEN, "Kin"),
+        ("Regal belt", LOOTITEM_CATEGORY_OMEN, "Ou"),
+        ("Regal captain's gloves", LOOTITEM_CATEGORY_OMEN, "Ou"),
+        ("Regal cuffs", LOOTITEM_CATEGORY_OMEN, "Ou"),
+        ("Regal earring", LOOTITEM_CATEGORY_OMEN, "Ou"),
+        ("Regal gauntlets", LOOTITEM_CATEGORY_OMEN, "Ou"),
+        ("Regal gem", LOOTITEM_CATEGORY_OMEN, "Ou"),
+        ("Regal gloves", LOOTITEM_CATEGORY_OMEN, "Ou"),
+        ("Regal necklace", LOOTITEM_CATEGORY_OMEN, "Ou"),
+        ("Regal ring", LOOTITEM_CATEGORY_OMEN, "Ou"),
+        ("Nusku shield", LOOTITEM_CATEGORY_OMEN, "Glassy Craver"),
+        ("Sherida earring", LOOTITEM_CATEGORY_OMEN, "Glassy Craver"),
+        ("Anu torque", LOOTITEM_CATEGORY_OMEN, "Glassy Craver"),
+        ("Kishar ring", LOOTITEM_CATEGORY_OMEN, "Glassy Gorger"),
+        ("Enki strap", LOOTITEM_CATEGORY_OMEN, "Glassy Gorger"),
+        ("Erra pendant", LOOTITEM_CATEGORY_OMEN, "Glassy Gorger"),
+        ("Adad amulet", LOOTITEM_CATEGORY_OMEN, "Glassy Thinker"),
+        ("Knobkierrie", LOOTITEM_CATEGORY_OMEN, "Glassy Thinker"),
+        ("Adapa shield", LOOTITEM_CATEGORY_OMEN, "Glassy Thinker"),
+        ("Kin's Scale", LOOTITEM_CATEGORY_OMEN, "Kin"),
+        ("Gin's Scale", LOOTITEM_CATEGORY_OMEN, "Gin"),
+        ("Kei's Scale", LOOTITEM_CATEGORY_OMEN, "Kei"),
+        ("Kyou's Scale", LOOTITEM_CATEGORY_OMEN, "Kyou"),
+        ("Fu's Scale", LOOTITEM_CATEGORY_OMEN, "Fu"),
+    ]
+
+    for x in Job.job_choices:
+        defaults.append(("Footshard: " + x[0], LOOTITEM_CATEGORY_DYNAMIS, x[0]))
+        defaults.append(("Voidfoot: " + x[0], LOOTITEM_CATEGORY_DYNAMIS, x[0]))
+        defaults.append(("Handshard: " + x[0], LOOTITEM_CATEGORY_DYNAMIS, x[0]))
+        defaults.append(("Voidhand: " + x[0], LOOTITEM_CATEGORY_DYNAMIS, x[0]))
+        defaults.append(("Headshard: " + x[0], LOOTITEM_CATEGORY_DYNAMIS, x[0]))
+        defaults.append(("Voidhead: " + x[0], LOOTITEM_CATEGORY_DYNAMIS, x[0]))
+        defaults.append(("Legshard: " + x[0], LOOTITEM_CATEGORY_DYNAMIS, x[0]))
+        defaults.append(("Voidleg: " + x[0], LOOTITEM_CATEGORY_DYNAMIS, x[0]))
+        defaults.append(("Torsoshard: " + x[0], LOOTITEM_CATEGORY_DYNAMIS, x[0]))
+        defaults.append(("Voidtorso: " + x[0], LOOTITEM_CATEGORY_DYNAMIS, x[0]))
+
+
+    @classmethod
+    def create_defaults(cls):
+        for x in cls.defaults:
+            try:
+                cls.objects.get(name=x[0])
+            except cls.DoesNotExist:
+                new_obj = cls(
+                    name=x[0],
+                    category=x[1],
+                    second_category=x[2]
+                )
+                new_obj.save()
+
+    def __str__(self):
+        return "%s (%s, %s)" % (
+            self.name, self.get_category_display(), self.second_category
+        )
+    
