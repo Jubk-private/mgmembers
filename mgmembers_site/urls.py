@@ -76,6 +76,9 @@ urlpatterns = [
     url(r'^character/(?P<name>[^/]+)/drops/?$',
         mgviews.RegisteredDropsView.as_view(),
         name='character-registered-drops'),
+    url(r'^character/(?P<name>[^/]+)/loot-overview/?$',
+        mgviews.CharacterLootOverviewView.as_view(),
+        name='character-loot-overview'),
     url(r'^login_nonce/create/?$',
         mgviews.CreateLoginNonceView.as_view(),
         name='loginnonce-create'),
@@ -119,6 +122,14 @@ urlpatterns = [
     url(r'^party_builder/',
         mgviews.PartyBuilder.as_view(),
         name="party-builder"),
+
+    url(r'^item-queues/?$',
+        mgviews.ItemQueueList.as_view(),
+        name="item-queue-list"),
+    url(r'^item-queues/(?P<pk>\d+)/?$',
+        mgviews.ItemQueueEdit.as_view(),
+        name="item-queue-edit"),
+
 ]
 
 # Serve media through development server

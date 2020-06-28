@@ -6,9 +6,16 @@
     <div class="col-md-12">
       <h2>Edit jobs for {{ character.name }}</h2>
       <p>
-        The gear choices here do not count for dynamis drops. To edit your
-        Dynamis gear preferences go to
-        <a href="{% url 'character-dynamis-gear' character.name%}">Dynamis Gear Choices</a>.
+        On this page you can edit which jobs you have, which jobs you want to
+        bring to events and which jobs you want gear for.
+      </p>
+      <p>
+        The jobs marked as <strong>Primary job for gear</strong> will make the character
+        able to lot omen drops that these jobs can use.
+      </p>
+      <p>
+        You can use the <a href="{% url 'character-loot-overview' character.name %}">Loot Overview</a>
+        page to see which items you can lot after saving your choices.
       </p>
       <form method="post" role="form" id="loginform">
         {% csrf_token %}
@@ -50,7 +57,7 @@
           </tbody>
         </table>
         <button type="submit" role="button" class="btn btn-primary">Save changes</button>
-        <a href="{% url 'character' character.name %}" role="button" class="btn btn-danger">Cancel</a>
+        <a href="{% url 'character-loot-overview' character.name %}" role="button" class="btn btn-danger">Cancel</a>
       </form>
     </div>
   </div>

@@ -20,6 +20,7 @@
           <td>{{ character.event_jobs_html|safe }}</td>
           <td>{{ character.gear_jobs_html|safe }}</td>
           <td>
+            <a href="{% url 'character-loot-overview' character.name %}" role="button" class="btn btn-primary btn-tiny">Loot overview</a>
             <a href="{% url 'character-edit' character.name %}" role="button" class="btn btn-primary fa fa-edit" title="Edit"></a>
             <a href="{% url 'character-delete' character.name %}" role="button" class="btn btn-danger fa fa-times" title="Delete"></a>
           </td>
@@ -34,6 +35,7 @@
     <h1>Superuser tools</h1>
     <ul>
       <li><a href="{% url 'loginnonce-create' %}">Create login nonce</a></li>
+      <li><a href="{% url 'item-queue-list' %}">Manage loot priority queues</a></li>
       <li><a onclick="this.target='_blank'" href="https://docs.google.com/spreadsheets/d/1BXDVzZBt6EgTEIZnEUB6SdwUOzrmSkSRhdIPXFB2ZrA/edit?usp=sharing">Loot calculator spreadsheet</a></li>
     </ul>
     {% endif %}

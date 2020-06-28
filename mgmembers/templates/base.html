@@ -39,6 +39,7 @@
             <div class="dropdown-menu" aria-labelledby="geardropdowntoggle">
               <a class="dropdown-item" href="{% url 'gear-choices-overview' %}">General loot choices</a>
               <a class="dropdown-item" href="{% url 'gear-omen-scales' %}">Omen Scales</a>
+              <a class="dropdown-item" href="{% url 'item-queue-list' %}">Items with priority lotting</a>
               <a class="dropdown-item" href="{% url 'gear-dynamis-overview' %}">Dynamis Farming</a>
               <a class="dropdown-item" href="{% url 'aeonics-overview' %}">Aeonics Overview</a>
               <a class="dropdown-item" href="{% url 'dynamis-wave3-overview' %}">Dynamis wave3</a>
@@ -99,6 +100,8 @@
         {% endblock%}
       </div>
     </main>
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark" style="min-height: 4em; margin-top: 2em;"></nav>
 
     <script src="{% static 'mgmembers/jquery/jquery-1.12.4.js' %}"></script>
     <script src="{% static 'mgmembers/bootstrap/js/bootstrap.min.js' %}"></script>

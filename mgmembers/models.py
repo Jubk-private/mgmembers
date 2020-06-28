@@ -1771,4 +1771,40 @@ class LootItem(models.Model):
         return "%s (%s, %s)" % (
             self.name, self.get_category_display(), self.second_category
         )
-    
+
+class ItemQueue(models.Model):
+    item = models.ForeignKey(LootItem, on_delete=models.CASCADE)
+
+    def character_list(self):
+        return ", ".join([x.character.name for x in self.positions.all()])
+
+    @classmethod
+    def item_dict(cls):
+        excluded_set = {}
+
+        for x in cls.objects.all():
+            excluded_set[x.item.name] = x
+
+        return excluded_set
+
+
+    def character_has_priority(self, character_name):
+        return self.positions.filter(
+            character__name=character_name
+        ).exists()
+
+    def __str__(self):
+        return "ItemQueue for %s" % (self.item.name)
+
+class ItemQueuePosition(models.Model):
+
+    class Meta:
+        ordering = ['position', 'character__name']
+
+    character = models.ForeignKey(Character, on_delete=models.CASCADE)
+    queue = models.ForeignKey(
+        ItemQueue,
+        on_delete=models.CASCADE,
+        related_name="positions"
+    )
+    position = models.IntegerField()

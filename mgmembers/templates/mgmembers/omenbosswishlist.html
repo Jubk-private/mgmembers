@@ -4,12 +4,15 @@
 {% block content %}
   <div class="row text-left">
     <div class="col-md-12">
-      <h2>Select Omen bosses {{ view.character.name }} wants killed</h2>
+      <h2>Select which omen bosses {{ view.character.name }} want scales from</h2>
+      <p>
+        You will be able to lot on scales from both the bosses chosen below.
+      </p>
       <form method="post" role="form" id="omenbosseswishlist">
         {% csrf_token %}
         {{ form|bootstrap }}
         <button type="submit" role="button" class="btn btn-primary">Save changes</button>
-        <a href="{% url 'character' view.character.name %}" role="button" class="btn btn-danger">Cancel</a>
+        <a href="{% url 'character-loot-overview' view.character.name %}" role="button" class="btn btn-danger">Cancel</a>
       </form>
     </div>
   </div>

@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+
+{% block content %}
+  <div class="row text-left">
+    <div class="col-md-12">
+      <h2>Edit '{{ object }}'</h2>
+      <form method="post" role="form" id="omenbosseswishlist">
+        {% csrf_token %}
+        {{ form|bootstrap }}
+        <p>
+            Item: {{ object.item }}
+        </p>
+        <div>
+            <label for="add_characters_dropdown">Add another character</label>
+            <select name="add_characters_dropdown" id="add_characters_dropdown">
+                <option></option>
+                {% for x in characters %}
+                <option value="{{ x.id }}">{{x.name}}</option>
+                {% endfor %}
+            </select>
+            <select name="selected_characters" id="selected_characters" style="display: none">
+                <option></option>
+            </select>
+            <input type="button" value="Add" id="add_character_botton" />
+        </div>
+        <h2>Characters</h2>
+        <p>Use handle on the left to drag up or down to change order</p>
+        <ul id="sortable" class="list-group">
+            {% for x in object.positions.all %}
+            <li class="list-group-item">
+                <span class="drag-handle btn btn-secondary fa fa-arrows-alt"></span>
+                <span class="character-name">{{ x.character.name }}</span>
+                <button role="button" class="btn btn-danger fa fa-times float-right"></button>
+                <input type="hidden" name="characterposition" value="{{ x.character.id }}" />
+            </li>
+            {% endfor %}
+        </ul>
+        <div style="margin-top: 1em;">
+            <button type="submit" role="button" class="btn btn-primary">Save changes</button>
+            <a href="{% url 'item-queue-list' %}" role="button" class="btn btn-danger">Cancel</a>
+        </div>
+      </form>
+        <ul id="item-template" style="display: none">
+            <li class="list-group-item">
+                <span class="drag-handle btn btn-secondary fa fa-arrows-alt"></span>
+                <span class="character-name"></span>
+                <button role="button" class="btn btn-danger fa fa-times float-right"></button>
+                <input type="hidden" name="characterposition" value="" />
+            </li>
+        </ul>
+    </div>
+  </div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+$(function() {
+    $( "#sortable" ).sortable({
+        handle: ".drag-handle"
+    });
+    $( "#sortable .drag-handle" ).disableSelection();
+
+
+    function remove_item_onclick(e) {
+        e.preventDefault();
+        var $li = $(this).parent(),
+            id = $li.find('input').val();
+        $li.remove();
+        $('#selected_characters option').each(function() {
+            if($(this).attr("value") == id) {
+                $('#add_characters_dropdown').append($(this));
+                return false;
+            }
+        })
+    }
+
+    $('#add_character_botton').on('click', function() {
+        var $select = $('#add_characters_dropdown'),
+            id = $select.val();
+        
+        if(!id) {
+            return;
+        }
+
+        var $selected_option = $select.find("option:selected"),
+            name = $selected_option.text(),
+            new_html = $('#item-template').html(),
+            $new_elem = $(new_html);
+        
+        $new_elem.find('.character-name').text(name);
+        $new_elem.find('input').val(id);
+        $new_elem.find('.fa-times').on('click', remove_item_onclick);
+        $('#sortable').append($new_elem);
+
+        $('#selected_characters').append($selected_option);
+    });
+
+    // set up initial state
+    var start_selected = {};
+
+    $('#sortable input').each(function() {
+        var val = $(this).attr('value');
+        if(val) {
+            start_selected[val] = true;
+        }
+    });
+
+    $('#add_characters_dropdown option').each(function() {
+        var val = $(this).attr('value');
+        if(val && start_selected[val]) {
+            $('#selected_characters').append($(this));
+        }
+    });
+
+    $('#sortable .fa-times').on('click', remove_item_onclick);
+
+});
+</script>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+
+{% block content %}
+  <div class="row text-left">
+    <div class="col-md-12">
+      <h2>Registered loot for {{ character.name }}</h2>
+      <p>Here you can see an overview of the loot {{ character.name }} can lot on</p>
+      <p>
+        <a href="{% url 'character' character.name %}" role="button" class="btn btn-primary">Go back to character overview for {{ character.name }}</a>
+      </p>
+
+      <h3>
+        General items from primary gear jobs
+        <a href="{% url 'character-jobs-edit' character.name %}" role="button" class="btn btn-primary">Edit</a>
+      </h3>
+      <ul>
+      {% for x in from_jobs %}
+        <li><strong>{{ x.item }}</strong> from {{ x.from }}</li>
+      {% endfor %}
+      </ul>
+
+      <h3>
+        Dynamis shard and void items
+        {% if not character.dynamisgearchoices or character.dynamisgearchoices.can_be_edited %}
+          <a href="{% url 'character-dynamis-gear' character.name %}" role="button" class="btn btn-primary">
+            Edit
+          </a>
+        {% endif %}
+      </h3>
+      {% if character.dynamisgearchoices and not character.dynamisgearchoices.can_be_edited %}
+      <p>
+        Editing of dynamis settings is blocked until {{ character.dynamisgearchoices.next_edit_time }}
+      </p>
+      {% endif %}
+      <ul>
+      {% for x in from_dynamis %}
+        <li {% if forloop.counter|divisibleby:"4" %}style="padding-bottom: 0.5em;"{% endif %}><strong>{{ x.item }}</strong> from {{ x.from }}</li>
+      {% endfor %}
+      </ul>
+
+      <h3>
+        Omen scales
+        <a href="{% url 'character-omen-bosses-wishlist' character.name %}" role="button" class="btn btn-primary">Edit</a>
+      </h3>
+      <ul>
+      {% for x in omen_scales %}
+        <li><strong>{{ x.item }}</strong> from {{ x.from }}</li>
+      {% endfor %}
+      </ul>
+
+      <h3>
+        Items that {{ character.name }} already have
+        <a href="{% url 'character-registered-drops' character.name %}" role="button" class="btn btn-primary">Edit</a>
+      </h3>
+      <ul>
+      {% for x in registered_drops %}
+        <li><strong>{{ x.name }}</strong></li>
+      {% endfor %}
+      </ul>
+
+      <h3>
+        Priority lotting items
+        <a href="{% url 'item-queue-list' %}" role="button" class="btn btn-primary">See more</a>
+      </h3>
+      <p>
+        The following priority lotting items affects {{ character.name }}.
+      </p>
+      <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th scope="col">Item</th>
+          <th scope="col">Priority queue</th>
+          <th scope="col">Can lot with priority</th>
+          <th scope="col">Can lot if no priority members present</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for x in queued_items %}
+        <tr>
+          <th scope="row">{{ x.queue.item.name }}</th>
+          <td>{{ x.queue.character_list }}</td>
+          <td class="text-center"><span class="fa fa-{% if x.with_priority %}check text-success{%else%}times text-danger{%endif%}"></span></td>
+          <td class="text-center"><span class="fa fa-{% if x.without_priority %}check text-success{%else%}times text-danger{%endif%}"></span></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+      </table>
+
+      <p>
+        <a href="{% url 'character' character.name %}" role="button" class="btn btn-primary">Go back to character overview for {{ character.name }}</a>
+      </p>
+
+    </div>
+  </div>
+{% endblock %}

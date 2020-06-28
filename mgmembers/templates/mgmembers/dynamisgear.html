@@ -4,12 +4,19 @@
 {% block content %}
   <div class="row text-left">
     <div class="col-md-12">
-      <h2>Select which gear you want from dynamis runs</h2>
+      <h2>Select which jobs you want dynamis drops for</h2>
+      <p>
+        You can choose two jobs for each zone.
+        </p>
+      <p>
+        Note that you can only change your choices once every 60 days. You will still be able to make changes one hour
+        from your last change, so you do not have to stress about getting the choices right on your first edit.
+      </p>
       <form method="post" role="form" id="dynagearform">
         {% csrf_token %}
         {{ form|bootstrap }}
         <button type="submit" role="button" class="btn btn-primary">Save changes</button>
-        <a href="{% url 'character' view.character.name %}" role="button" class="btn btn-danger">Cancel</a>
+        <a href="{% url 'character-loot-overview' view.character.name %}" role="button" class="btn btn-danger">Cancel</a>
       </form>
     </div>
   </div>

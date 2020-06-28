@@ -19,6 +19,7 @@ from django.views.generic import CreateView
 from django.views.generic import DeleteView
 from django.views.generic import DetailView
 from django.views.generic import FormView
+from django.views.generic import ListView
 from django.views.generic import TemplateView
 from django.views.generic import UpdateView
 from django.views.generic import View
@@ -256,7 +257,7 @@ class JobsEditView(UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('character', args=[self.object.name])
+        return reverse('character-loot-overview', args=[self.object.name])
 
 
 class CreateLoginNonceView(CreateView):
@@ -361,7 +362,7 @@ class OmenBossWishlistView(UpdateView):
             return self.model(character=self.character)
 
     def get_success_url(self):
-        return reverse('character', args=[self.character.name])
+        return reverse('character-loot-overview', args=[self.character.name])
 
 
 class OmenBossesClearsView(UpdateView):
@@ -500,7 +501,7 @@ class DynamisGearView(UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('character', args=[self.character.name])
+        return reverse('character-loot-overview', args=[self.character.name])
 
 
 class OmenScalesOverview(TemplateView):
@@ -802,6 +803,17 @@ class LootJsonView(View):
                 osc_second = self.scale_map.get(osc.second_choice)
                 if osc_second:
                     add_lotter(osc_second, name)
+
+        # Mark priority lot items
+        priority_items = mgmodels.ItemQueue.item_dict()
+        for itemname in priority_items.keys():
+            queue = priority_items[itemname]
+            if itemname not in loot:
+                loot[itemname] = {}
+            
+            loot[itemname]["_priority_queue"] = [
+                x.character.name for x in queue.positions.all()
+            ]
 
         return JsonResponse(
             loot,
@@ -1174,7 +1186,6 @@ class RegisteredDropsView(UpdateView):
                     "items": []
                 }
                 current_category["subcategories"].append(current_2nd_category)
-            print(x.id in selected)
             if x.id in selected:
                 x.selected = True
             else:
@@ -1188,4 +1199,248 @@ class RegisteredDropsView(UpdateView):
 
 
     def get_success_url(self):
-        return reverse('character', args=[self.character.name])
+        return reverse('character-loot-overview', args=[self.character.name])
+
+class CharacterLootOverviewView(DetailView):
+    template_name = 'mgmembers/character_loot_overview.html'
+
+    def get_object(self):
+        try:
+            self.character = mgmodels.Character.objects.get(
+                name=self.kwargs.get("name"),
+                owner=self.request.user
+            )
+        except mgmodels.Character.DoesNotExist:
+            raise Http404("Character not found")
+
+        return self.character
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+
+        character = self.character
+
+        items_from_jobs = []
+
+        for job in character.primary_gear_jobs:
+            for item in LootJsonView.general_items_by_job[job.name]:
+                items_from_jobs.append({
+                    "item": item,
+                    "from": "primary gear job: " + job.name
+                })
+
+        items_from_dynamis_choices = []
+
+        if hasattr(character, "dynamisgearchoices"):
+            dgs = character.dynamisgearchoices
+
+            for x in dgs.sandoria_jobs:
+                items_from_dynamis_choices.append(
+                    {"item": "Footshard: " + x,
+                     "from": "Dynamis San d'Oria settings"}
+                )
+                items_from_dynamis_choices.append(
+                    {"item": "Voidfoot: " + x,
+                     "from": "Dynamis San d'Oria settings"}
+                )
+
+            for x in dgs.bastok_jobs:
+                items_from_dynamis_choices.append(
+                    {"item": "Handshard: " + x,
+                     "from": "Dynamis Bastok settings"}
+                )
+                items_from_dynamis_choices.append(
+                    {"item": "Voidhand: " + x,
+                     "from": "Dynamis Bastok settings"}
+                )
+
+            for x in dgs.windurst_jobs:
+                items_from_dynamis_choices.append(
+                    {"item": "Headshard: " + x,
+                     "from": "Dynamis Windurst settings"}
+                )
+                items_from_dynamis_choices.append(
+                    {"item": "Voidhead: " + x,
+                     "from": "Dynamis Windurst settings"}
+                )
+
+            for x in dgs.jeuno_jobs:
+                items_from_dynamis_choices.append(
+                    {"item": "Legshard: " + x,
+                     "from": "Dynamis Jeuno settings"}
+                )
+                items_from_dynamis_choices.append(
+                    {"item": "Voidleg: " + x,
+                     "from": "Dynamis Jeuno settings"}
+                )
+
+            for x in dgs.body_jobs:
+                items_from_dynamis_choices.append(
+                    {"item": "Torsoshard: " + x,
+                     "from": "Dynamis body settings (all zones)"}
+                )
+                items_from_dynamis_choices.append(
+                    {"item": "Voidtorso: " + x,
+                     "from": "Dynamis body settings (all zones)"}
+                )
+
+        items_from_omen_choices = []
+
+        if hasattr(character, "omenbosswishlist"):
+            osc = character.omenbosswishlist
+            osc_first = LootJsonView.scale_map.get(osc.first_choice)
+            if osc_first:
+                items_from_omen_choices.append({
+                    "item": osc_first,
+                    "from": "Omen scale choices (first choice)"
+                })
+
+            osc_second = LootJsonView.scale_map.get(osc.second_choice)
+            if osc_second:
+                items_from_omen_choices.append({
+                    "item": osc_second,
+                    "from": "Omen scale choices (second choice)"
+                })
+
+        filtered_items = set()
+        registered_drops = []
+
+        if hasattr(character, "registered_drops"):
+            for x in character.registered_drops.all():
+                filtered_items.add(x.name)
+                registered_drops.append(x)
+
+        # Figure out which queued items are relevant for this character
+        all_queued_items = mgmodels.ItemQueue.item_dict()
+        queued_items = []
+        for collection in (
+            items_from_jobs,
+            items_from_dynamis_choices,
+            items_from_omen_choices
+        ): 
+            for x in collection:
+                if x["item"] in all_queued_items:
+                    queue = all_queued_items[x["item"]]
+                    queued_items.append({
+                        "queue": queue,
+                        # Since we got it from an existing loot list this
+                        # character will be able to do a non-priority lot
+                        # on the item.
+                        "without_priority": True,
+                        "with_priority": queue.character_has_priority(
+                            character.name
+                        )
+                    })
+                    filtered_items.add(x["item"])
+                    del all_queued_items[x["item"]]
+        for queue in all_queued_items.values():
+            if queue.character_has_priority(character.name):
+                queued_items.append({
+                    "queue": queue,
+                    "without_priority": False,
+                    "with_priority": True
+                })
+        queued_items.sort(key=lambda i: i["queue"].item.name)
+
+        result["character"] = character
+
+        result["from_jobs"] = [
+            x for x in items_from_jobs if x["item"] not in filtered_items
+        ]
+        result["from_jobs"].sort(key=lambda i: i['item'])
+
+        result["from_dynamis"] = [
+            x for x in items_from_dynamis_choices if x["item"] not in filtered_items
+        ]
+
+        result["omen_scales"] = [
+            x for x in items_from_omen_choices if x["item"] not in filtered_items
+        ]
+
+        result["queued_items"] = queued_items
+
+        result["registered_drops"] = registered_drops
+        result["registered_drops"].sort(key=lambda i: i.name)
+
+
+        return result
+
+
+class AdminOnlyMixin(object):
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            messages.error(
+                request,
+                "You do not have permission to access this page"
+            )
+            return HttpResponseRedirect(self.get_success_url())
+        return super().dispatch(request, *args, **kwargs)
+
+
+class ItemQueueList(ListView):
+    template_name = 'mgmembers/itemqueues/list.html'
+    model = mgmodels.ItemQueue
+
+    def get_context_object_name(self, object_list):
+        return "itemqueues"
+
+    def get_success_url(self):
+        return reverse('home')
+
+class ItemQueueEdit(AdminOnlyMixin, UpdateView):
+    template_name = 'mgmembers/itemqueues/edit.html'
+    model = mgmodels.ItemQueue
+    fields = ()
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+
+        result["characters"] = mgmodels.Character.objects.filter(
+            owner__is_active=True
+        ).order_by('name')
+
+        return result
+
+    def form_valid(self, form):
+        """If the form is valid, save the associated model."""
+        self.object = form.save()
+
+        # Make a map of existing elements
+        existing_elements = {}
+        for x in self.object.positions.all():
+            existing_elements[x.character.id] = x
+
+        selected_characters = self.request.POST.getlist("characterposition", [])
+
+        # Loop over incoming character ids, update positions
+        # for ones we already know about and add new ones.
+        # Also remove recurring characters from the existing_elements
+        # dictionary
+        new_position = 0
+        for x in selected_characters:
+            new_position = new_position + 1
+
+            if x in existing_elements:
+                existing_elements[x].position = new_position
+                existing_elements[x].save()
+                del existing_elements[x]
+            else:
+                new_item = mgmodels.ItemQueuePosition(
+                    character=mgmodels.Character.objects.get(pk=x),
+                    position=new_position,
+                    queue=self.object
+                )
+                new_item.save()
+            
+        
+        # Remaining elements in existing_elements should be deleted
+        for x in existing_elements.values():
+            x.delete()
+
+        return super().form_valid(form)
+
+
+    def get_success_url(self):
+        return reverse('item-queue-list')
+
