@@ -16,9 +16,16 @@
       </h3>
       <ul>
       {% for x in from_jobs %}
-        <li><strong>{{ x.item }}</strong> from {{ x.from }}</li>
+        {% if x.queued %}
+          <li><strong>({{ x.item }})*</strong> from {{ x.from }}</li>
+        {% else %}
+          <li><strong>{{ x.item }}</strong> from {{ x.from }}</li>
+        {% endif %}
       {% endfor %}
       </ul>
+      <p>
+        <strong>*</strong>: These items are in a priority queue, see the bottom of the page.
+      </p>
 
       <h3>
         Dynamis shard and void items

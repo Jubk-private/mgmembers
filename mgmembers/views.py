@@ -1330,7 +1330,8 @@ class CharacterLootOverviewView(DetailView):
                             character.name
                         )
                     })
-                    filtered_items.add(x["item"])
+                    x["queued"] = True
+                    # filtered_items.add(x["item"])
                     del all_queued_items[x["item"]]
         for queue in all_queued_items.values():
             if queue.character_has_priority(character.name):
