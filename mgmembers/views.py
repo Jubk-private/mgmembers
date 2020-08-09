@@ -1207,8 +1207,7 @@ class CharacterLootOverviewView(DetailView):
     def get_object(self):
         try:
             self.character = mgmodels.Character.objects.get(
-                name=self.kwargs.get("name"),
-                owner=self.request.user
+                name=self.kwargs.get("name")
             )
         except mgmodels.Character.DoesNotExist:
             raise Http404("Character not found")
